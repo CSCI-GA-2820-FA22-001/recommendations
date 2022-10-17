@@ -106,6 +106,15 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(new_recommendation["numberOfLikes"], test_recommendation.numberOfLikes)
         self.assertEqual(new_recommendation["recommendationType"], test_recommendation.recommendationType)"""
 
+    def test_delete_recommendation(self):
+        """It should Delete a Recommendation"""
+        test_recommendation = self._create_recommendation(1)[0]
+        response = self.client.delete(f"{BASE_URL}/{test_recommendation.id}")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(response.data), 0)
+        # make sure they are deleted
+        response = self.client.get(f"{BASE_URL}/{test_recommendation.id}")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
  ######################################################################
