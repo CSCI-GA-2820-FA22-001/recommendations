@@ -92,19 +92,18 @@ def update_recommendations(recommendation_id):
 # DELETE A RECOMMENDATION
 ######################################################################
 @app.route("/recommendations/<int:pet_id>", methods=["DELETE"])
-def delete_recommendation(recommendationId):
+def delete_recommendation(recommendation_id):
     """
     Delete a Recommendation
     This endpoint will delete a Recommendation based the id specified in the path
     """
-    app.logger.info("Request to delete recommendation with id: %s", recommendationId)
-    recommendation = Recommendation.find(recommendationId)
+    app.logger.info("Request to delete recommendation with id: %s", recommendation_id)
+    recommendation = Recommendation.find(recommendation_id)
     if recommendation:
         recommendation.delete()
 
-    app.logger.info("Recommendation with ID [%s] delete complete.", recommendationId)
+    app.logger.info("Recommendation with ID [%s] delete complete.", recommendation_id)
     return "", status.HTTP_204_NO_CONTENT
-
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
