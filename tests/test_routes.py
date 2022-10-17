@@ -127,6 +127,7 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(data["name"], test_recommendations.name)
+
     def test_delete_recommendation(self):
         """It should Delete a Recommendation"""
         test_recommendation = self._create_recommendation(1)[0]
@@ -177,3 +178,4 @@ class TestRecommendationServer(TestCase):
         response = self.client.put(f"{BASE_URL}/{12}", json=new_recommendation)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
     
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
