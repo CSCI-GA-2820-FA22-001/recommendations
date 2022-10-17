@@ -56,7 +56,7 @@ class TestRecommendationServer(TestCase):
         """Factory method to create recommendations in bulk"""
         recommendations = []
         for _ in range(count):
-            test_recommendation = RecommendationsFactory()
+            test_recommendation = RecommendationFactory()
             response = self.client.post(BASE_URL, json=test_recommendation.serialize())
             self.assertEqual(
                 response.status_code, status.HTTP_201_CREATED, "Could not create test recommendation"
@@ -105,6 +105,7 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(new_recommendation["recommendedName"], test_recommendation.recommendedName)
         self.assertEqual(new_recommendation["numberOfLikes"], test_recommendation.numberOfLikes)
         self.assertEqual(new_recommendation["recommendationType"], test_recommendation.recommendationType)"""
+
 
     def test_delete_recommendation(self):
         """It should Delete a Recommendation"""
