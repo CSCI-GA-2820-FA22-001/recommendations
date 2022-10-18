@@ -6,7 +6,7 @@ Describe what your service does here
 
 from flask import Flask, jsonify, request, url_for, make_response, abort
 from .common import status  # HTTP Status Codes
-from service.models import Recommendation
+from service.models import DataValidationError, Recommendation
 
 # Import Flask application
 from . import app
@@ -59,15 +59,14 @@ def update_recommendations(recommendation_id):
     """
     app.logger.info("Request to update recommendation with id: %s", recommendation_id)
     check_content_type("application/json")
-    if not Recommendation.find(recommendation_id):
-        abort(status.HTTP_404_NOT_FOUND, f"Recommendation with id {recommendation_id} was not found")
+    if recommendation_id is None:
+        abort(status.HTTP_404_NOT_FOUND, f"No recommendation_id {recommendation_id} provided")
     recommendation = Recommendation.find(recommendation_id)
+    if recommendation is None:
+        abort(status.HTTP_404_NOT_FOUND, f"Recommendation id {recommendation_id} does not exist")
     recommendation.deserialize(request.get_json())
-    recommendation.id = recommendation_id
-    recommendation.update()
-    message = recommendation.serialize()
-    app.logger.info("Recommendation with ID [%s] updated.", recommendation.id)
-    return jsonify(message), status.HTTP_201_CREATED #, {"Location": location_url}
+    recommendation.update() # wo jue de ke yi le ba
+    app.logger.info("Recommendation with ID [%s] updated.", recommendation_id)
 
 
 ######################################################################
