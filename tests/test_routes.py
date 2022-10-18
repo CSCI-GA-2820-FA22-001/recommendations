@@ -56,7 +56,7 @@ class TestRecommendationServer(TestCase):
         """Factory method to create recommendations in bulk"""
         recommendations = []
         for _ in range(count):
-            test_recommendation = RecommendationsFactory()
+            test_recommendation = RecommendationFactory()
             response = self.client.post(BASE_URL, json=test_recommendation.serialize())
             self.assertEqual(
                 response.status_code, status.HTTP_201_CREATED, "Could not create test recommendation"
@@ -107,6 +107,15 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(new_recommendation["recommendationType"], test_recommendation.recommendationType)"""
 
 
+    def test_get_recommendations(self):
+        """It should Get a single recommendations"""
+        # get the id of a recommendations
+        test_recommendations = self._create_recommendation(1)[0]
+        response = self.client.get(f"{BASE_URL}/{test_recommendations.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data["name"], test_recommendations.name)
+
 
  ######################################################################
     #  T E S T   S A D   P A T H S
@@ -126,3 +135,13 @@ class TestRecommendationServer(TestCase):
         """It should not Create a rec with bad content type"""
         response = self.client.post(BASE_URL, headers={'Content-Type': 'application/xml'})
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+    
+    def test_get_rec_not_found(self):
+        """It should not Get a recommendation thats not found"""
+        response = self.client.get(f"{BASE_URL}/0")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("was not found", data["message"])
+
+
