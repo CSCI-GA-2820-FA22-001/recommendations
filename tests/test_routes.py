@@ -106,6 +106,18 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(new_recommendation["numberOfLikes"], test_recommendation.numberOfLikes)
         self.assertEqual(new_recommendation["recommendationType"], test_recommendation.recommendationType)"""
 
+    def test_update_recommendation(self):
+        test_recommendation = RecommendationFactory()
+        response = self.client.post(BASE_URL, json=test_recommendation.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # update the recommendation
+        new_recommendation = response.get_json()
+        logging.debug(new_recommendation)
+        new_recommendation["name"] = "unknown"
+        response = self.client.put(f"{BASE_URL}/{new_recommendation['id']}", json=new_recommendation)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        update_recommendation = response.get_json()
+        self.assertEqual(update_recommendation["name"], "unknown")
 
     def test_get_recommendations(self):
         """It should Get a single recommendations"""
@@ -136,6 +148,7 @@ class TestRecommendationServer(TestCase):
         response = self.client.post(BASE_URL, headers={'Content-Type': 'application/xml'})
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
     
+
     def test_get_rec_not_found(self):
         """It should not Get a recommendation thats not found"""
         response = self.client.get(f"{BASE_URL}/0")
@@ -145,3 +158,13 @@ class TestRecommendationServer(TestCase):
         self.assertIn("was not found", data["message"])
 
 
+
+    def test_update_recommendation_no_correct_id(self):
+        test_recommendation = RecommendationFactory()
+        response = self.client.post(BASE_URL, json=test_recommendation.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        new_recommendation = response.get_json()
+        logging.debug(new_recommendation)
+        response = self.client.put(f"{BASE_URL}/{12}", json=new_recommendation)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+    
