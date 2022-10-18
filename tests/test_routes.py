@@ -107,6 +107,7 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(new_recommendation["recommendationType"], test_recommendation.recommendationType)"""
 
     def test_update_recommendation(self):
+        """Updating a recommendation should work"""
         test_recommendation = RecommendationFactory()
         response = self.client.post(BASE_URL, json=test_recommendation.serialize())
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -127,6 +128,26 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(data["name"], test_recommendations.name)
+
+    def test_delete_recommendation(self):
+        """It should Delete a Recommendation"""
+        test_recommendation = self._create_recommendation(1)[0]
+        response = self.client.delete(f"{BASE_URL}/{test_recommendation.id}")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(response.data), 0)
+        # make sure they are deleted
+        response = self.client.get(f"{BASE_URL}/{test_recommendation.id}")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_delete_recommendation(self):
+        """It should Delete a Recommendation"""
+        test_recommendation = self._create_recommendation(1)[0]
+        response = self.client.delete(f"{BASE_URL}/{test_recommendation.id}")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(response.data), 0)
+        # make sure they are deleted
+        response = self.client.get(f"{BASE_URL}/{test_recommendation.id}")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
  ######################################################################
@@ -160,6 +181,7 @@ class TestRecommendationServer(TestCase):
 
 
     def test_update_recommendation_no_correct_id(self):
+        """It should not get a recommendation that does not exist"""
         test_recommendation = RecommendationFactory()
         response = self.client.post(BASE_URL, json=test_recommendation.serialize())
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -167,4 +189,3 @@ class TestRecommendationServer(TestCase):
         logging.debug(new_recommendation)
         response = self.client.put(f"{BASE_URL}/{12}", json=new_recommendation)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-    
