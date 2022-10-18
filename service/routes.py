@@ -42,10 +42,29 @@ def create_recommendations():
     recommendation.deserialize(request.get_json())
     recommendation.create()
     message = recommendation.serialize()
-    # location_url = url_for("get_recommendation", recommendation_id=recommendation.id, _external=True)
+    location_url = url_for("get_recommendations", recommendationId=recommendation.id, _external=True)
 
     app.logger.info("Recommendation with ID [%s] created.", recommendation.id)
-    return jsonify(message), status.HTTP_201_CREATED #, {"Location": location_url}
+    return jsonify(message), status.HTTP_201_CREATED , {"Location": location_url}
+
+######################################################################
+# LIST ALL recommendations
+######################################################################
+@app.route("/recommendations", methods=["GET"])
+def list_recommendations():
+    """Returns all of the Recommendations"""
+    app.logger.info("Request for Recommendations list")
+    recs = []
+    name = request.args.get("name")
+    if name:
+        recs = Recommendation.find_by_name(name)
+    else:
+        recs = Recommendation.all()
+
+    results = [rec.serialize() for rec in recs]
+    app.logger.info("Returning %d recommendations", len(results))
+    return jsonify(results), status.HTTP_200_OK
+
 
 ######################################################################
 #  READ RECOMMENDATIONS
@@ -84,7 +103,8 @@ def update_recommendations(recommendation_id):
     recommendation.update()
     message = recommendation.serialize()
     app.logger.info("Recommendation with ID [%s] updated.", recommendation_id)
-    return jsonify(message), status.HTTP_200_OK #, {"Location": location_url}
+    location_url = url_for("get_recommendations", recommendationId=recommendation.id, _external=True)
+    return jsonify(message), status.HTTP_200_OK , {"Location": location_url}
 
 
 
