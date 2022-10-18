@@ -6,7 +6,7 @@ Describe what your service does here
 
 from flask import Flask, jsonify, request, url_for, make_response, abort
 from .common import status  # HTTP Status Codes
-from service.models import Recommendation
+from service.models import  Recommendation
 
 # Import Flask application
 from . import app
@@ -47,6 +47,26 @@ def create_recommendations():
     app.logger.info("Recommendation with ID [%s] created.", recommendation.id)
     return jsonify(message), status.HTTP_201_CREATED #, {"Location": location_url}
 
+
+######################################################################
+# UPDATE A RECOMMENDATION
+######################################################################
+@app.route("/recommendations/<int:recommendation_id>", methods=["PUT"])
+def update_recommendations(recommendation_id):
+    """
+    Update a Recommendation
+    This endpoint will update a Recommendation based the data in the body that is posted
+    """
+    app.logger.info("Request to update recommendation with id: %s", recommendation_id)
+    check_content_type("application/json")
+    recommendation = Recommendation.find(recommendation_id)
+    if recommendation is None:
+        abort(status.HTTP_404_NOT_FOUND, f"Recommendation id {recommendation_id} does not exist")
+    recommendation.deserialize(request.get_json())
+    recommendation.update()
+    message = recommendation.serialize()
+    app.logger.info("Recommendation with ID [%s] updated.", recommendation_id)
+    return jsonify(message), status.HTTP_200_OK #, {"Location": location_url}
 
 
 ######################################################################

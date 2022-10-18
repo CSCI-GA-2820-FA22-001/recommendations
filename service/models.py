@@ -58,9 +58,9 @@ class Recommendation(db.Model):
         """
         Updates a Recommendation to the database
         """
-        logger.info("Saving %s", self.name)
-        if not self.id:
-            raise DataValidationError("Update called with empty ID field")
+        logger.info("Updating %s", self.name)
+        if self.id is None:
+            raise DataValidationError("Recommendation id is not provided!")
         db.session.commit()
 
     def delete(self):
