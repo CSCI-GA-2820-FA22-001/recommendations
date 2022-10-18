@@ -8,6 +8,7 @@ Test cases can be run with the following:
 import os
 import logging
 from unittest import TestCase
+from urllib.parse import quote_plus
 from unittest.mock import MagicMock, patch
 from service import app
 from service.models import db, init_db, Recommendation
@@ -84,7 +85,7 @@ class TestRecommendationServer(TestCase):
 
         # Make sure location header is set
         location = response.headers.get("Location", None)
-        #self.assertIsNotNone(location)
+        self.assertIsNotNone(location)
 
         # Check the data is correct
         new_recommendation = response.get_json()
@@ -96,15 +97,14 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(new_recommendation["number_of_likes"], test_recommendation.number_of_likes)
 
         # Check that the location header was correct
-        """response = self.client.get(location)
+        response = self.client.get(location)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         new_recommendation = response.get_json()
-        self.assertEqual(new_recommendation["id"], test_recommendation.id)
         self.assertEqual(new_recommendation["name"], test_recommendation.name)
-        self.assertEqual(new_recommendation["recommendId"], test_recommendation.recommendId)
-        self.assertEqual(new_recommendation["recommendedName"], test_recommendation.recommendedName)
-        self.assertEqual(new_recommendation["numberOfLikes"], test_recommendation.numberOfLikes)
-        self.assertEqual(new_recommendation["recommendationType"], test_recommendation.recommendationType)"""
+        self.assertEqual(new_recommendation["recommendationId"], test_recommendation.recommendationId)
+        self.assertEqual(new_recommendation["recommendationName"], test_recommendation.recommendationName)
+        self.assertEqual(new_recommendation["type"], test_recommendation.type.name)
+        self.assertEqual(new_recommendation["number_of_likes"], test_recommendation.number_of_likes)
 
     def test_update_recommendation(self):
         """Updating a recommendation should work"""
@@ -119,6 +119,14 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         update_recommendation = response.get_json()
         self.assertEqual(update_recommendation["name"], "unknown")
+    
+    def test_get_rec_list(self):
+        """It should Get a list of Recommendations"""
+        self._create_recommendation(5)
+        response = self.client.get(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), 5)
 
     def test_get_recommendations(self):
         """It should Get a single recommendations"""
@@ -139,16 +147,22 @@ class TestRecommendationServer(TestCase):
         response = self.client.get(f"{BASE_URL}/{test_recommendation.id}")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_delete_recommendation(self):
-        """It should Delete a Recommendation"""
-        test_recommendation = self._create_recommendation(1)[0]
-        response = self.client.delete(f"{BASE_URL}/{test_recommendation.id}")
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(len(response.data), 0)
-        # make sure they are deleted
-        response = self.client.get(f"{BASE_URL}/{test_recommendation.id}")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
+    def test_query_rec_list_by_name(self):
+        """It should Query Recommendations by name"""
+        recs = self._create_recommendation(10)
+        test_name = recs[0].name
+        print(test_name)
+        name_recs = [rec for rec in recs if rec.name == test_name]
+        response = self.client.get(
+            BASE_URL,
+            query_string=f"name={quote_plus(test_name)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), len(name_recs))
+        # check the data just to be sure
+        for rec in data:
+            self.assertEqual(rec["name"], test_name)
 
  ######################################################################
     #  T E S T   S A D   P A T H S
