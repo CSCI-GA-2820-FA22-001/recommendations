@@ -59,6 +59,8 @@ def update_recommendations(recommendation_id):
     """
     app.logger.info("Request to update recommendation with id: %s", recommendation_id)
     check_content_type("application/json")
+    if not Recommendation.find(recommendation_id):
+        abort(status.HTTP_404_NOT_FOUND, f"Recommendation with id {recommendation_id} was not found")
     recommendation = Recommendation.find(recommendation_id)
     recommendation.deserialize(request.get_json())
     recommendation.id = recommendation_id
