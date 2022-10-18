@@ -65,7 +65,7 @@ def update_recommendations(recommendation_id):
     if recommendation is None:
         abort(status.HTTP_404_NOT_FOUND, f"Recommendation id {recommendation_id} does not exist")
     recommendation.deserialize(request.get_json())
-    recommendation.update() # wo jue de ke yi le ba
+    recommendation.update()
     app.logger.info("Recommendation with ID [%s] updated.", recommendation_id)
 
 
