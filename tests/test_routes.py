@@ -118,9 +118,6 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         update_recommendation = response.get_json()
         self.assertEqual(update_recommendation["name"], "unknown")
-    
-    
-
 
 
  ######################################################################
