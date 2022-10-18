@@ -51,22 +51,20 @@ def create_recommendations():
 ######################################################################
 # UPDATE A RECOMMENDATION
 ######################################################################
-@app.route("/recommendations", methods=["PUT"])
-def update_recommendations():
+@app.route("/recommendations/<int:recommendation_id>", methods=["PUT"])
+def update_recommendations(recommendation_id):
     """
     Update a Recommendation
-    This endpoint will create a Recommendation based the data in the body that is posted
+    This endpoint will update a Recommendation based the data in the body that is posted
     """
-    # TDOO: Implement
-    app.logger.info("Request to create a recommendation")
+    app.logger.info("Request to update recommendation with id: %s", recommendation_id)
     check_content_type("application/json")
-    recommendation = Recommendation()
+    recommendation = Recommendation.find(recommendation_id)
     recommendation.deserialize(request.get_json())
-    recommendation.create()
+    recommendation.id = recommendation_id
+    recommendation.update()
     message = recommendation.serialize()
-    # location_url = url_for("get_recommendation", recommendation_id=recommendation.id, _external=True)
-
-    app.logger.info("Recommendation with ID [%s] created.", recommendation.id)
+    app.logger.info("Recommendation with ID [%s] updated.", recommendation.id)
     return jsonify(message), status.HTTP_201_CREATED #, {"Location": location_url}
 
 
