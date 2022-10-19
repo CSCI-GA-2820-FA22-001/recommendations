@@ -123,8 +123,8 @@ $ vagrant destroy
 
     * app/routes.py -- the main Service routes using Python Flask
     * app/models.py -- the data model using SQLAlchemy
-    * tests/test_routes.py -- test cases against the Pet service
-    * tests/test_models.py -- test cases against the Pet model
+    * tests/test_routes.py -- test cases against the Recommendations service
+    * tests/test_models.py -- test cases against the Recommendations model
 
 ## APIs
 
