@@ -3,7 +3,6 @@ Models for YourResourceModel
 
 All of the models are stored in this module
 """
-from importlib.util import set_loader
 import logging
 from enum import Enum
 from flask import Flask
@@ -14,6 +13,7 @@ logger = logging.getLogger("flask.app")
 # Create the SQLAlchemy object to be initialized later in init_db()
 db = SQLAlchemy()
 
+
 def init_db(app):
     """Initialize the SQLAlchemy app"""
     Recommendation.init_db(app)
@@ -22,11 +22,13 @@ def init_db(app):
 class DataValidationError(Exception):
     """ Used for an data validation errors when deserializing """
 
+
 class RecommendationType(Enum):
     """Enumeration of valid Recommendation Types"""
     CROSSSELL = 0
     UPSELL = 1
     ACCESSORY = 2
+
 
 class Recommendation(db.Model):
     """
@@ -41,9 +43,6 @@ class Recommendation(db.Model):
         db.Enum(RecommendationType), nullable=False, server_default=(RecommendationType.UPSELL.name)
     )
     number_of_likes = db.Column(db.Integer)
-
-    def __repr__(self):
-        return f"<Recommendation {self.name} id=[{self.id}] RecommendationId=[{self.recommendationId}] RecommendationName=[{self.recommendationName}] RecommendationType=[{self.type}] number_of_likes=[{self.number_of_likes}]>"
 
     def create(self):
         """
@@ -143,15 +142,14 @@ class Recommendation(db.Model):
         return cls.query.get_or_404(recommendation_id)
 
     @classmethod
-    def find_by_name(cls, name)-> list:
+    def find_by_name(cls, name) -> list:
         """Returns all recmmendationModels with the given name
-
         Args:
             name (string): the name of the recmmendationModels you want to match
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
-    
+
     @classmethod
     def find_by_type(cls, type: RecommendationType = RecommendationType.UPSELL) -> list:
         """Returns all recmmendationModels by their Type
