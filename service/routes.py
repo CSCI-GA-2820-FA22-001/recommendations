@@ -4,9 +4,9 @@ My Service
 Describe what your service does here
 """
 
-from flask import Flask, jsonify, request, url_for, make_response, abort
+from flask import jsonify, request, url_for, abort
 from .common import status  # HTTP Status Codes
-from service.models import  Recommendation
+from service.models import Recommendation
 
 # Import Flask application
 from . import app
@@ -27,6 +27,7 @@ def index():
         status.HTTP_200_OK,
     )
 
+
 ######################################################################
 # CREATE A RECOMMENDATION
 ######################################################################
@@ -45,7 +46,8 @@ def create_recommendations():
     location_url = url_for("get_recommendations", recommendationId=recommendation.id, _external=True)
 
     app.logger.info("Recommendation with ID [%s] created.", recommendation.id)
-    return jsonify(message), status.HTTP_201_CREATED , {"Location": location_url}
+    return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
+
 
 ######################################################################
 # LIST ALL recommendations
@@ -80,10 +82,9 @@ def get_recommendations(recommendationId):
     recommendation = Recommendation.find(recommendationId)
     if not recommendation:
         abort(status.HTTP_404_NOT_FOUND, f"recommendations with id '{recommendationId}' was not found.")
-
-
     app.logger.info("Returning recommendation: %s", recommendation.recommendationName)
     return jsonify(recommendation.serialize()), status.HTTP_200_OK
+
 
 ######################################################################
 # UPDATE A RECOMMENDATION
@@ -104,8 +105,7 @@ def update_recommendations(recommendation_id):
     message = recommendation.serialize()
     app.logger.info("Recommendation with ID [%s] updated.", recommendation_id)
     location_url = url_for("get_recommendations", recommendationId=recommendation.id, _external=True)
-    return jsonify(message), status.HTTP_200_OK , {"Location": location_url}
-
+    return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
 
 
 ######################################################################
@@ -134,6 +134,7 @@ def init_db():
     """ Initializes the SQLAlchemy app """
     global app
     Recommendation.init_db(app)
+
 
 def check_content_type(content_type):
     """Checks that the media type is correct"""
