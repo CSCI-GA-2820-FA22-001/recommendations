@@ -5,8 +5,8 @@ Describe what your service does here
 """
 
 from flask import jsonify, request, url_for, abort
+from service.models import Recommendation, RecommendationType
 from .common import status  # HTTP Status Codes
-from service.models import Recommendation
 
 # Import Flask application
 from . import app
@@ -58,8 +58,14 @@ def list_recommendations():
     app.logger.info("Request for Recommendations list")
     recs = []
     name = request.args.get("name")
+    type_string = request.args.get("type")
     if name:
+        app.logger.info("Filtering recommendations by name=%s", name)
         recs = Recommendation.find_by_name(name)
+    elif type_string:
+        app.logger.info("Filtering recommendations by type=%s", type_string)
+        recommendation_type = RecommendationType[type_string]
+        recs = Recommendation.find_by_type(recommendation_type)
     else:
         recs = Recommendation.all()
 

@@ -164,6 +164,23 @@ class TestRecommendationServer(TestCase):
         for rec in data:
             self.assertEqual(rec["name"], test_name)
 
+    def test_query_rec_list_by_type(self):
+        """It should Query Recommendations by type"""
+        recs = self._create_recommendation(10)
+        test_type = recs[0].type
+        print(test_type)
+        type_recs = [rec for rec in recs if rec.type == test_type]
+        response = self.client.get(
+            BASE_URL,
+            query_string=f"type={quote_plus(test_type.name)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), len(type_recs))
+        # check the data just to be sure
+        for rec in data:
+            self.assertEqual(rec["type"], test_type.name)
+
  ######################################################################
     #  T E S T   S A D   P A T H S
     ######################################################################
