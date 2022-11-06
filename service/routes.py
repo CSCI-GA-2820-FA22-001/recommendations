@@ -132,6 +132,45 @@ def delete_recommendation(recommendation_id):
     return "", status.HTTP_204_NO_CONTENT
 
 ######################################################################
+# LIKE A RECOMMENDATION
+######################################################################
+@app.route("/recommendations/<int:recommendation_id>/like", methods=["PUT"])
+def like_recommendation(recommendation_id):
+    """
+    Like a Recommendation
+    This endpoint will increment a Recommendation like counter based the id specified in the path
+    """
+    app.logger.info("Request to like recommendation with id: %s", recommendation_id)
+    recommendation = Recommendation.find(recommendation_id)
+    if recommendation is None:
+        abort(status.HTTP_404_NOT_FOUND, f"Recommendation id {recommendation_id} does not exist")
+    recommendation.like()
+    message = recommendation.serialize()
+    app.logger.info("Recommendation with ID [%s] liked.", recommendation_id)
+    location_url = url_for("get_recommendations", recommendationId=recommendation.id, _external=True)
+    return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
+
+######################################################################
+# UNLIKE A RECOMMENDATION
+######################################################################
+@app.route("/recommendations/<int:recommendation_id>/unlike", methods=["PUT"])
+def unlike_recommendation(recommendation_id):
+    """
+    Like a Recommendation
+    This endpoint will decrement a Recommendation like counter based the id specified in the path
+    """
+    app.logger.info("Request to like recommendation with id: %s", recommendation_id)
+    recommendation = Recommendation.find(recommendation_id)
+    if recommendation is None:
+        abort(status.HTTP_404_NOT_FOUND, f"Recommendation id {recommendation_id} does not exist")
+    recommendation.unlike()
+    message = recommendation.serialize()
+    app.logger.info("Recommendation with ID [%s] liked.", recommendation_id)
+    location_url = url_for("get_recommendations", recommendationId=recommendation.id, _external=True)
+    return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
+
+
+######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 

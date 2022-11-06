@@ -42,7 +42,7 @@ class Recommendation(db.Model):
     type = db.Column(
         db.Enum(RecommendationType), nullable=False, server_default=(RecommendationType.UPSELL.name)
     )
-    number_of_likes = db.Column(db.Integer)
+    number_of_likes = db.Column(db.Integer, default=0)
 
     def create(self):
         """
@@ -62,14 +62,37 @@ class Recommendation(db.Model):
             raise DataValidationError("Recommendation id is not provided!")
         db.session.commit()
 
+    def like(self):
+        """
+        Increments the likes of a Recommendation to the database
+        """
+        logger.info("Updating %s", self.name)
+        if self.id is None:
+            raise DataValidationError("Recommendation id is not provided!")
+        self.number_of_likes +=1
+        db.session.commit()
+    
+    def unlike(self):
+        """
+        Decrements the likes of a Recommendation to the database
+        """
+        logger.info("Updating %s", self.name)
+        if self.id is None:
+            raise DataValidationError("Recommendation id is not provided!")
+        if self.number_of_likes==0:
+            raise DataValidationError("Recommendation already has 0 likes")
+        else:
+            self.number_of_likes -=1
+        db.session.commit()
+
     def delete(self):
-        """ Removes a YourResourceModel from the data store """
+        """ Removes a Recommendation from the data store """
         logger.info("Deleting %s", self.name)
         db.session.delete(self)
         db.session.commit()
 
     def serialize(self):
-        """ Serializes a YourResourceModel into a dictionary """
+        """ Serializes a Recommendation into a dictionary """
         # return {"id": self.id, "name": self.name}
         return {
             "id": self.id,
@@ -82,14 +105,14 @@ class Recommendation(db.Model):
 
     def deserialize(self, data: dict):
         """
-        Deserializes a YourResourceModel from a dictionary
+        Deserializes a Recommendation from a dictionary
 
         Args:
             data (dict): A dictionary containing the resource data
         """
         try:
             self.name = data["name"]
-            self.number_of_likes = data["number_of_likes"]
+            self.number_of_likes = data["number_of_likes"] if "number_of_likes" in data else 0
             self.recommendationId = data["recommendationId"]
             self.recommendationName = data["recommendationName"]
             self.type = getattr(RecommendationType, data["type"])
