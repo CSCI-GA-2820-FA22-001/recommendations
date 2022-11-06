@@ -118,7 +118,7 @@ class TestRecommendationServer(TestCase):
         update_recommendation = response.get_json()
         self.assertEqual(update_recommendation["name"], "unknown")
 
-    def test_like_unlike_recommendation(self):
+    def test_like_dislike_recommendation(self):
         """Liking and Unliking a recommendation should work"""
         test_recommendation = RecommendationFactory()
         response = self.client.post(BASE_URL, json=test_recommendation.serialize())
@@ -130,7 +130,7 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         update_recommendation = response.get_json()
         self.assertEqual(update_recommendation["number_of_likes"], 1)
-        response = self.client.put(f"{BASE_URL}/{new_recommendation['id']}/unlike")
+        response = self.client.put(f"{BASE_URL}/{new_recommendation['id']}/dislike")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         update_recommendation = response.get_json()
         self.assertEqual(update_recommendation["number_of_likes"], 0)
@@ -236,7 +236,7 @@ class TestRecommendationServer(TestCase):
         response = self.client.put(f"{BASE_URL}/{12}", json=new_recommendation)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_unlike0_recommendation(self):
+    def test_dislike0_recommendation(self):
         """Unliking a recommendation with 0 likes shouldn't work"""
         test_recommendation = RecommendationFactory()
         response = self.client.post(BASE_URL, json=test_recommendation.serialize())
@@ -244,13 +244,13 @@ class TestRecommendationServer(TestCase):
         # update the recommendation
         new_recommendation = response.get_json()
         logging.debug(new_recommendation)
-        response = self.client.put(f"{BASE_URL}/{new_recommendation['id']}/unlike")
+        response = self.client.put(f"{BASE_URL}/{new_recommendation['id']}/dislike")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     
-    def test_like_unlike_recommendation_no_correct_id(self):
-        """It should not glike/unlike a recommendation that does not exist"""
+    def test_like_dislike_recommendation_no_correct_id(self):
+        """It should not glike/dislike a recommendation that does not exist"""
         response = self.client.put(f"{BASE_URL}/{0}/like")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        response = self.client.put(f"{BASE_URL}/{0}/unlike")
+        response = self.client.put(f"{BASE_URL}/{0}/dislike")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 

@@ -111,31 +111,31 @@ class TestRecommendationModel(unittest.TestCase):
         recommendation.id = None
         self.assertRaises(DataValidationError, recommendation.update)
 
-    def test_like_and_unlike_no_id(self):
-        """It should not LIke or Unlike a recommendation with no id"""
+    def test_like_and_dislike_no_id(self):
+        """It should not LIke or dislike a recommendation with no id"""
         recommendation = RecommendationFactory()
         logging.debug(recommendation)
         recommendation.id = None
         self.assertRaises(DataValidationError, recommendation.like)
-        self.assertRaises(DataValidationError, recommendation.unlike)
+        self.assertRaises(DataValidationError, recommendation.dislike)
 
-    def test_like_and_unlike_rec(self):
+    def test_like_and_dislike_rec(self):
         """It should increment the number_of_likes"""
         recommendation = RecommendationFactory()
         recommendation.create()
         self.assertEqual(len(Recommendation.all()), 1)
         recommendation.like()
         self.assertEqual(recommendation.number_of_likes, 1)
-        recommendation.unlike()
+        recommendation.dislike()
         self.assertEqual(recommendation.number_of_likes, 0)
     
-    def test_unlike_at_zero(self):
-        """It should not unlike a recommendation that is at 0 likes"""
+    def test_dislike_at_zero(self):
+        """It should not dislike a recommendation that is at 0 likes"""
         recommendation = RecommendationFactory()
         logging.debug(recommendation)
         recommendation.create()
         self.assertEqual(len(Recommendation.all()), 1)
-        self.assertRaises(DataValidationError, recommendation.unlike)
+        self.assertRaises(DataValidationError, recommendation.dislike)
 
     def test_delete_a_recommendation(self):
         """It should Delete a recommendation"""

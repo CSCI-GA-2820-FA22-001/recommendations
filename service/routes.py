@@ -151,10 +151,10 @@ def like_recommendation(recommendation_id):
     return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
 
 ######################################################################
-# UNLIKE A RECOMMENDATION
+# DISLIKE A RECOMMENDATION
 ######################################################################
-@app.route("/recommendations/<int:recommendation_id>/unlike", methods=["PUT"])
-def unlike_recommendation(recommendation_id):
+@app.route("/recommendations/<int:recommendation_id>/dislike", methods=["PUT"])
+def dislike_recommendation(recommendation_id):
     """
     Like a Recommendation
     This endpoint will decrement a Recommendation like counter based the id specified in the path
@@ -163,7 +163,7 @@ def unlike_recommendation(recommendation_id):
     recommendation = Recommendation.find(recommendation_id)
     if recommendation is None:
         abort(status.HTTP_404_NOT_FOUND, f"Recommendation id {recommendation_id} does not exist")
-    recommendation.unlike()
+    recommendation.dislike()
     message = recommendation.serialize()
     app.logger.info("Recommendation with ID [%s] liked.", recommendation_id)
     location_url = url_for("get_recommendations", recommendationId=recommendation.id, _external=True)

@@ -72,7 +72,7 @@ class Recommendation(db.Model):
         self.number_of_likes +=1
         db.session.commit()
     
-    def unlike(self):
+    def dislike(self):
         """
         Decrements the likes of a Recommendation to the database
         """
