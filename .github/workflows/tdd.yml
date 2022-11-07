@@ -19,7 +19,7 @@ jobs:
         ports:
           - 5432:5432
         # Set health checks to wait until postgres has started
-        options: >
+        options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
@@ -29,11 +29,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: python
 
       - name: Install libraries for PostgreSQL
         run: |
@@ -53,16 +48,13 @@ jobs:
           flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
           # Run pylint on the service
           pylint service
-      
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
 
       - name: Run unit tests with nose
         run: |
           export FLASK_APP=service:app
           nosetests
         env:
-          DATABASE_URI: "postgresql://postgres:pgs3cr3t@postgres:5432/testdb"
+          DATABASE_URI: "postgresql://postgres:pgs3cr3t@postgres:5432/postgres"
 
       - name: Upload code coverage
         uses: codecov/codecov-action@v2 
