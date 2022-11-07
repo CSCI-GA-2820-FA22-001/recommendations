@@ -13,10 +13,9 @@ jobs:
     container: python:3.9-slim
     services:
       postgres:
-        image: postgres
+        image: postgres:alpine
         env:
-          POSTGRES_PASSWORD: pgs3cr3t
-          POSTGRES_DB: testdb
+          POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
         # Set health checks to wait until postgres has started
