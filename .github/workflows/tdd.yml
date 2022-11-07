@@ -31,6 +31,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: python
+
       - name: Install libraries for PostgreSQL
         run: |
           apt-get update
@@ -49,6 +54,9 @@ jobs:
           flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
           # Run pylint on the service
           pylint service
+      
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
 
       - name: Run unit tests with nose
         run: |
