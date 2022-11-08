@@ -14,9 +14,11 @@ DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
 )
 
+
 ######################################################################
 #  Recommendations   M O D E L   T E S T   C A S E S
 ######################################################################
+
 class TestRecommendationModel(unittest.TestCase):
     """ Test Cases for Recommendation Model """
 
@@ -49,7 +51,8 @@ class TestRecommendationModel(unittest.TestCase):
 
     def test_create_a_recommendation(self):
         """It should Create a Recommendation and assert that it exists"""
-        recommendation = Recommendation( name="prodA", recommendationId=2, recommendationName="prodB", type=RecommendationType.CROSSSELL, number_of_likes=2)
+        recommendation = Recommendation(name="prodA", recommendationId=2,
+                                        recommendationName="prodB", type=RecommendationType.CROSSSELL, number_of_likes=2)
         self.assertTrue(recommendation is not None)
         self.assertEqual(recommendation.id, None)
         self.assertEqual(recommendation.name, "prodA")
@@ -62,13 +65,13 @@ class TestRecommendationModel(unittest.TestCase):
         """It should Create a recommendation and add it to the database"""
         recommendations = Recommendation.all()
         self.assertEqual(recommendations, [])
-        recommendation = Recommendation( name="prodA", recommendationId=2, recommendationName="prodB", type=RecommendationType.CROSSSELL, number_of_likes=2)
+        recommendation = Recommendation(name="prodA", recommendationId=2,
+                                        recommendationName="prodB", type=RecommendationType.CROSSSELL, number_of_likes=2)
         self.assertTrue(recommendation is not None)
         self.assertEqual(recommendation.id, None)
         recommendation.create()
         recommendations = Recommendation.all()
         self.assertEqual(len(recommendations), 1)
-    
 
     def test_read_a_recommendation(self):
         """It should Read a recommendation"""
@@ -103,7 +106,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(len(recommendations), 1)
         self.assertEqual(recommendations[0].id, original_id)
         self.assertEqual(recommendations[0].number_of_likes, 10)
-    
+
     def test_update_no_id(self):
         """It should not Update a recommendation with no id"""
         recommendation = RecommendationFactory()
@@ -119,7 +122,7 @@ class TestRecommendationModel(unittest.TestCase):
         # delete the recommendation and make sure it isn't in the database
         recommendation.delete()
         self.assertEqual(len(recommendation.all()), 0)
-    
+
     def test_list_all_recommendations(self):
         """It should List all recommendations in the database"""
         recommendations = Recommendation.all()
@@ -163,14 +166,12 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(recommendation.type.name, data["type"])
         self.assertEqual(recommendation.number_of_likes, data["number_of_likes"])
 
-    
     def test_deserialize_missing_data(self):
         """It should not deserialize a recommendation with missing data"""
         data = {"id": 1, "name": "prodA", "number_of_likes": 3}
         recommendation = Recommendation()
         self.assertRaises(DataValidationError, recommendation.deserialize, data)
 
-    
     def test_deserialize_bad_data(self):
         """It should not deserialize bad data"""
         data = "this is not a dictionary"
@@ -202,7 +203,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(recommendation.recommendationName, recommendations[1].recommendationName)
         self.assertEqual(recommendation.type, recommendations[1].type)
         self.assertEqual(recommendation.number_of_likes, recommendations[1].number_of_likes)
-    
+
     def test_find_by_type(self):
         """It should Find recommendations by type"""
         recommendations = RecommendationFactory.create_batch(10)
@@ -214,7 +215,6 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(found.count(), count)
         for recommendation in found:
             self.assertEqual(recommendation.type, type)
-    
 
     def test_find_by_name(self):
         """It should Find a recommendation by Name"""
@@ -231,13 +231,11 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(found[0].type, recommendations[0].type)
         self.assertEqual(found[0].number_of_likes, recommendations[0].number_of_likes)
 
-
     def test_find_or_404_found(self):
         """It should Find or return 404 not found"""
         recommendations = RecommendationFactory.create_batch(3)
         for recommendation in recommendations:
             recommendation.create()
-
         recommendation = Recommendation.find_or_404(recommendations[1].id)
         self.assertIsNot(recommendation, None)
         self.assertEqual(recommendation.id, recommendations[1].id)
