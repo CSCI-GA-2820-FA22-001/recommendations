@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendations-cf
+  labels:
+    app: recommendations-cf
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0%
+      maxUnavailable: 50%
+  selector:
+    matchLabels:
+      app: recommendations-cf
+  template:
+    metadata:
+      labels:
+        app: recommendations-cf
+    spec:
+      imagePullSecrets:
+      - name: all-icr-io
+      restartPolicy: Always
+      containers:
+      - name: recommendations-cf
+        image: us.icr.io/nyu_devops/recommendations-cf:1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        env:
+          - name: DATABASE_URI
+            valueFrom:
+              secretKeyRef:
+                name: postgres-creds
+                key: database_uri
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 30
+          httpGet:
+            path: /health
+            port: 8080
+        resources:
+          limits:
+            cpu: "0.20"
+            memory: "64Mi"
+          requests:
+            cpu: "0.10"        
+            memory: "32Mi"
