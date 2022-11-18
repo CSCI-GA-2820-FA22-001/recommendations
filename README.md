@@ -145,8 +145,8 @@ POST /
 {
   "name": "prodA",
   "number_of_likes": 3,
-  "recommendationId": 2,
-  "recommendationName": "prodB",
+  "recommendation_id": 2,
+  "recommendation_name": "prodB",
   "type": "UPSELL"
 }
 ```
@@ -156,8 +156,8 @@ POST /
   "id": 140,
   "name": "prodA",
   "number_of_likes": 3,
-  "recommendationId": 2,
-  "recommendationName": "prodB",
+  "recommendation_id": 2,
+  "recommendation_name": "prodB",
   "type": "UPSELL"
 }
 ```
@@ -175,8 +175,8 @@ where "id" is the id of the recommendation. Here is sample response.
   "id": 140,
   "name": "prodA",
   "number_of_likes": 3,
-  "recommendationId": 2,
-  "recommendationName": "prodB",
+  "recommendation_id": 2,
+  "recommendation_name": "prodB",
   "type": "UPSELL"
 }
 ```
@@ -192,8 +192,8 @@ where "id" is the id of the recommendation. Here is sample request and response.
 {
   "name": "prodA",
   "number_of_likes": 3,
-  "recommendationId": 2,
-  "recommendationName": "prodB",
+  "recommendation_id": 2,
+  "recommendation_name": "prodB",
   "type": "UPSELL"
 }
 ```
@@ -203,8 +203,8 @@ where "id" is the id of the recommendation. Here is sample request and response.
   "id": 140,
   "name": "prodA",
   "number_of_likes": 3,
-  "recommendationId": 2,
-  "recommendationName": "prodB",
+  "recommendation_id": 2,
+  "recommendation_name": "prodB",
   "type": "UPSELL"
 }
 ```
@@ -229,16 +229,16 @@ GET /
   "id": 140,
   "name": "prodA",
   "number_of_likes": 3,
-  "recommendationId": 2,
-  "recommendationName": "prodB",
+  "recommendation_id": 2,
+  "recommendation_name": "prodB",
   "type": "UPSELL"
 },
 {
   "id": 141,
   "name": "prodA",
   "number_of_likes": 4,
-  "recommendationId": 3,
-  "recommendationName": "prodC",
+  "recommendation_id": 3,
+  "recommendation_name": "prodC",
   "type": "UPSELL"
 }
 ]

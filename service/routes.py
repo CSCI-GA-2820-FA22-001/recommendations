@@ -43,7 +43,7 @@ def create_recommendations():
     recommendation.deserialize(request.get_json())
     recommendation.create()
     message = recommendation.serialize()
-    location_url = url_for("get_recommendations", recommendationId=recommendation.id, _external=True)
+    location_url = url_for("get_recommendations", recommendation_id=recommendation.id, _external=True)
 
     app.logger.info("Recommendation with ID [%s] created.", recommendation.id)
     return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
@@ -78,17 +78,17 @@ def list_recommendations():
 #  READ RECOMMENDATIONS
 ######################################################################
 
-@app.route("/recommendations/<int:recommendationId>", methods=["GET"])
-def get_recommendations(recommendationId):
+@app.route("/recommendations/<int:recommendation_id>", methods=["GET"])
+def get_recommendations(recommendation_id):
     """
     Retrieve a single recommendation
     This endpoint will return a recommendations based on it's id
     """
-    app.logger.info("Request for recommendations with id: %s", recommendationId)
-    recommendation = Recommendation.find(recommendationId)
+    app.logger.info("Request for recommendations with id: %s", recommendation_id)
+    recommendation = Recommendation.find(recommendation_id)
     if not recommendation:
-        abort(status.HTTP_404_NOT_FOUND, f"recommendations with id '{recommendationId}' was not found.")
-    app.logger.info("Returning recommendation: %s", recommendation.recommendationName)
+        abort(status.HTTP_404_NOT_FOUND, f"recommendations with id '{recommendation_id}' was not found.")
+    app.logger.info("Returning recommendation: %s", recommendation.recommendation_name)
     return jsonify(recommendation.serialize()), status.HTTP_200_OK
 
 
@@ -110,7 +110,7 @@ def update_recommendations(recommendation_id):
     recommendation.update()
     message = recommendation.serialize()
     app.logger.info("Recommendation with ID [%s] updated.", recommendation_id)
-    location_url = url_for("get_recommendations", recommendationId=recommendation.id, _external=True)
+    location_url = url_for("get_recommendations", recommendation_id=recommendation.id, _external=True)
     return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
 
 
@@ -136,12 +136,6 @@ def delete_recommendation(recommendation_id):
 ######################################################################
 
 
-def init_db():
-    """ Initializes the SQLAlchemy app """
-    global app
-    Recommendation.init_db(app)
-
-
 def check_content_type(content_type):
     """Checks that the media type is correct"""
     if "Content-Type" not in request.headers:
@@ -163,6 +157,8 @@ def check_content_type(content_type):
 ######################################################################
 # GET HEALTH CHECK
 ######################################################################
+
+
 @app.route("/healthcheck")
 def healthcheck():
     """Let them know our heart is still beating"""
