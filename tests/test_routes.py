@@ -220,3 +220,11 @@ class TestRecommendationServer(TestCase):
         logging.debug(new_recommendation)
         response = self.client.put(f"{BASE_URL}/{12}", json=new_recommendation)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_health(self):
+        """It should be healthy"""
+        response = self.client.get("/healthcheck")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data["status"], 200)
+        self.assertEqual(data["message"], "Healthy")
