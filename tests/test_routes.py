@@ -1,5 +1,5 @@
 """
-TestYourResourceModel API Service Test Suite
+Recommendations API Service Test Suite
 
 Test cases can be run with the following:
   nosetests -v --with-spec --spec-color
@@ -23,6 +23,7 @@ BASE_URL = "/recommendations"
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
+# pylint: disable=R0904
 class TestRecommendationServer(TestCase):
     """ REST API Server Tests """
 
@@ -92,7 +93,6 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(new_recommendation["recommendation_id"], test_recommendation.recommendation_id)
         self.assertEqual(new_recommendation["recommendation_name"], test_recommendation.recommendation_name)
         self.assertEqual(new_recommendation["type"], test_recommendation.type.name)
-        self.assertEqual(new_recommendation["number_of_likes"], test_recommendation.number_of_likes)
 
         # Check that the location header was correct
         response = self.client.get(location)
@@ -102,7 +102,6 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(new_recommendation["recommendation_id"], test_recommendation.recommendation_id)
         self.assertEqual(new_recommendation["recommendation_name"], test_recommendation.recommendation_name)
         self.assertEqual(new_recommendation["type"], test_recommendation.type.name)
-        self.assertEqual(new_recommendation["number_of_likes"], test_recommendation.number_of_likes)
 
     def test_update_recommendation(self):
         """Updating a recommendation should work"""
@@ -117,6 +116,23 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         update_recommendation = response.get_json()
         self.assertEqual(update_recommendation["name"], "unknown")
+
+    def test_like_dislike_recommendation(self):
+        """Liking and Unliking a recommendation should work"""
+        test_recommendation = RecommendationFactory()
+        response = self.client.post(BASE_URL, json=test_recommendation.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # update the recommendation
+        new_recommendation = response.get_json()
+        logging.debug(new_recommendation)
+        response = self.client.put(f"{BASE_URL}/{new_recommendation['id']}/like")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        update_recommendation = response.get_json()
+        self.assertEqual(update_recommendation["number_of_likes"], 1)
+        response = self.client.put(f"{BASE_URL}/{new_recommendation['id']}/dislike")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        update_recommendation = response.get_json()
+        self.assertEqual(update_recommendation["number_of_likes"], 0)
 
     def test_get_rec_list(self):
         """It should Get a list of Recommendations"""
@@ -214,6 +230,24 @@ class TestRecommendationServer(TestCase):
         new_recommendation = response.get_json()
         logging.debug(new_recommendation)
         response = self.client.put(f"{BASE_URL}/{12}", json=new_recommendation)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_dislike_recommendation(self):
+        """Unliking a recommendation with 0 likes shouldn't work"""
+        test_recommendation = RecommendationFactory()
+        response = self.client.post(BASE_URL, json=test_recommendation.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # update the recommendation
+        new_recommendation = response.get_json()
+        logging.debug(new_recommendation)
+        response = self.client.put(f"{BASE_URL}/{new_recommendation['id']}/dislike")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_like_dislike_recommendation_no_correct_id(self):
+        """It should not glike/dislike a recommendation that does not exist"""
+        response = self.client.put(f"{BASE_URL}/{0}/like")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        response = self.client.put(f"{BASE_URL}/{0}/dislike")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_health(self):
