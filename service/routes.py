@@ -153,7 +153,7 @@ def like_recommendation(recommendation_id):
     recommendation.like()
     message = recommendation.serialize()
     app.logger.info("Recommendation with ID [%s] liked.", recommendation_id)
-    location_url = url_for("get_recommendations", recommendationId=recommendation.id, _external=True)
+    location_url = url_for("get_recommendations", recommendation_id=recommendation.id, _external=True)
     return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
 
 ######################################################################
@@ -172,7 +172,7 @@ def dislike_recommendation(recommendation_id):
     recommendation.dislike()
     message = recommendation.serialize()
     app.logger.info("Recommendation with ID [%s] liked.", recommendation_id)
-    location_url = url_for("get_recommendations", recommendationId=recommendation.id, _external=True)
+    location_url = url_for("get_recommendations", recommendation_id=recommendation.id, _external=True)
     return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
 
 
