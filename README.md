@@ -3,6 +3,8 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Language-Python-blue.svg)](https://python.org/)
 
+[![Build Status](https://github.com/CSCI-GA-2820-FA22-001/recommendations/actions/workflows/tdd.yml/badge.svg)](https://github.com/CSCI-GA-2820-FA22-001/recommendations/actions)
+[![codecov](https://codecov.io/gh/CSCI-GA-2820-FA22-001/recommendations/branch/master/graph/badge.svg?token=VQ46QSC8R9)](https://codecov.io/gh/CSCI-GA-2820-FA22-001/recommendations)
 
 ## Prerequisite Software Installation
 
@@ -143,8 +145,8 @@ POST /
 {
   "name": "prodA",
   "number_of_likes": 3,
-  "recommendationId": 2,
-  "recommendationName": "prodB",
+  "recommendation_id": 2,
+  "recommendation_name": "prodB",
   "type": "UPSELL"
 }
 ```
@@ -154,8 +156,8 @@ POST /
   "id": 140,
   "name": "prodA",
   "number_of_likes": 3,
-  "recommendationId": 2,
-  "recommendationName": "prodB",
+  "recommendation_id": 2,
+  "recommendation_name": "prodB",
   "type": "UPSELL"
 }
 ```
@@ -173,8 +175,8 @@ where "id" is the id of the recommendation. Here is sample response.
   "id": 140,
   "name": "prodA",
   "number_of_likes": 3,
-  "recommendationId": 2,
-  "recommendationName": "prodB",
+  "recommendation_id": 2,
+  "recommendation_name": "prodB",
   "type": "UPSELL"
 }
 ```
@@ -190,8 +192,8 @@ where "id" is the id of the recommendation. Here is sample request and response.
 {
   "name": "prodA",
   "number_of_likes": 3,
-  "recommendationId": 2,
-  "recommendationName": "prodB",
+  "recommendation_id": 2,
+  "recommendation_name": "prodB",
   "type": "UPSELL"
 }
 ```
@@ -201,8 +203,8 @@ where "id" is the id of the recommendation. Here is sample request and response.
   "id": 140,
   "name": "prodA",
   "number_of_likes": 3,
-  "recommendationId": 2,
-  "recommendationName": "prodB",
+  "recommendation_id": 2,
+  "recommendation_name": "prodB",
   "type": "UPSELL"
 }
 ```
@@ -227,16 +229,16 @@ GET /
   "id": 140,
   "name": "prodA",
   "number_of_likes": 3,
-  "recommendationId": 2,
-  "recommendationName": "prodB",
+  "recommendation_id": 2,
+  "recommendation_name": "prodB",
   "type": "UPSELL"
 },
 {
   "id": 141,
   "name": "prodA",
   "number_of_likes": 4,
-  "recommendationId": 3,
-  "recommendationName": "prodC",
+  "recommendation_id": 3,
+  "recommendation_name": "prodC",
   "type": "UPSELL"
 }
 ]

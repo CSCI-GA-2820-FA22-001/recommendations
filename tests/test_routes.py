@@ -9,11 +9,10 @@ import os
 import logging
 from unittest import TestCase
 from urllib.parse import quote_plus
-from unittest.mock import MagicMock, patch
 from service import app
 from service.models import db, init_db, Recommendation
-from tests.factories import RecommendationFactory
 from service.common import status  # HTTP Status Codes
+from tests.factories import RecommendationFactory
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
@@ -37,7 +36,6 @@ class TestRecommendationServer(TestCase):
         app.logger.setLevel(logging.CRITICAL)
         init_db(app)
 
-
     @classmethod
     def tearDownClass(cls):
         """ This runs once after the entire test suite """
@@ -52,7 +50,7 @@ class TestRecommendationServer(TestCase):
     def tearDown(self):
         """ This runs after each test """
         db.session.remove()
-    
+
     def _create_recommendation(self, count):
         """Factory method to create recommendations in bulk"""
         recommendations = []
@@ -75,7 +73,7 @@ class TestRecommendationServer(TestCase):
         """ It should call the home page """
         resp = self.client.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        
+
     def test_create_recommendation(self):
         """It should Create a new Recommendation"""
         test_recommendation = RecommendationFactory()
@@ -91,8 +89,8 @@ class TestRecommendationServer(TestCase):
         new_recommendation = response.get_json()
         logging.debug("Response: %s", new_recommendation)
         self.assertEqual(new_recommendation["name"], test_recommendation.name)
-        self.assertEqual(new_recommendation["recommendationId"], test_recommendation.recommendationId)
-        self.assertEqual(new_recommendation["recommendationName"], test_recommendation.recommendationName)
+        self.assertEqual(new_recommendation["recommendation_id"], test_recommendation.recommendation_id)
+        self.assertEqual(new_recommendation["recommendation_name"], test_recommendation.recommendation_name)
         self.assertEqual(new_recommendation["type"], test_recommendation.type.name)
 
         # Check that the location header was correct
@@ -100,8 +98,8 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         new_recommendation = response.get_json()
         self.assertEqual(new_recommendation["name"], test_recommendation.name)
-        self.assertEqual(new_recommendation["recommendationId"], test_recommendation.recommendationId)
-        self.assertEqual(new_recommendation["recommendationName"], test_recommendation.recommendationName)
+        self.assertEqual(new_recommendation["recommendation_id"], test_recommendation.recommendation_id)
+        self.assertEqual(new_recommendation["recommendation_name"], test_recommendation.recommendation_name)
         self.assertEqual(new_recommendation["type"], test_recommendation.type.name)
 
     def test_update_recommendation(self):
@@ -196,7 +194,7 @@ class TestRecommendationServer(TestCase):
         for rec in data:
             self.assertEqual(rec["type"], test_type.name)
 
- ######################################################################
+    ######################################################################
     #  T E S T   S A D   P A T H S
     ######################################################################
 
@@ -214,7 +212,6 @@ class TestRecommendationServer(TestCase):
         """It should not Create a rec with bad content type"""
         response = self.client.post(BASE_URL, headers={'Content-Type': 'application/xml'})
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
-    
 
     def test_get_rec_not_found(self):
         """It should not Get a recommendation thats not found"""
@@ -223,8 +220,6 @@ class TestRecommendationServer(TestCase):
         data = response.get_json()
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
-
-
 
     def test_update_recommendation_no_correct_id(self):
         """It should not get a recommendation that does not exist"""
@@ -236,7 +231,7 @@ class TestRecommendationServer(TestCase):
         response = self.client.put(f"{BASE_URL}/{12}", json=new_recommendation)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_dislike0_recommendation(self):
+    def test_dislike_recommendation(self):
         """Unliking a recommendation with 0 likes shouldn't work"""
         test_recommendation = RecommendationFactory()
         response = self.client.post(BASE_URL, json=test_recommendation.serialize())
@@ -254,3 +249,10 @@ class TestRecommendationServer(TestCase):
         response = self.client.put(f"{BASE_URL}/{0}/dislike")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_health(self):
+        """It should be healthy"""
+        response = self.client.get("/healthcheck")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data["status"], 200)
+        self.assertEqual(data["message"], "Healthy")
