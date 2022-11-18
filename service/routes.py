@@ -137,6 +137,7 @@ def delete_recommendation(recommendation_id):
     app.logger.info("Recommendation with ID [%s] delete complete.", recommendation_id)
     return "", status.HTTP_204_NO_CONTENT
 
+
 ######################################################################
 # LIKE A RECOMMENDATION
 ######################################################################
@@ -155,6 +156,7 @@ def like_recommendation(recommendation_id):
     app.logger.info("Recommendation with ID [%s] liked.", recommendation_id)
     location_url = url_for("get_recommendations", recommendation_id=recommendation.id, _external=True)
     return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
+
 
 ######################################################################
 # DISLIKE A RECOMMENDATION

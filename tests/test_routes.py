@@ -23,6 +23,7 @@ BASE_URL = "/recommendations"
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
+# pylint: disable=R0904
 class TestRecommendationServer(TestCase):
     """ REST API Server Tests """
 
@@ -132,7 +133,7 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         update_recommendation = response.get_json()
         self.assertEqual(update_recommendation["number_of_likes"], 0)
-    
+
     def test_get_rec_list(self):
         """It should Get a list of Recommendations"""
         self._create_recommendation(5)
@@ -241,7 +242,7 @@ class TestRecommendationServer(TestCase):
         logging.debug(new_recommendation)
         response = self.client.put(f"{BASE_URL}/{new_recommendation['id']}/dislike")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-    
+
     def test_like_dislike_recommendation_no_correct_id(self):
         """It should not glike/dislike a recommendation that does not exist"""
         response = self.client.put(f"{BASE_URL}/{0}/like")

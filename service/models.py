@@ -71,9 +71,9 @@ class Recommendation(db.Model):
         logger.info("Updating %s", self.name)
         if self.id is None:
             raise DataValidationError("Recommendation id is not provided!")
-        self.number_of_likes +=1
+        self.number_of_likes += 1
         db.session.commit()
-    
+
     def dislike(self):
         """
         Decrements the likes of a Recommendation to the database
@@ -81,10 +81,9 @@ class Recommendation(db.Model):
         logger.info("Updating %s", self.name)
         if self.id is None:
             raise DataValidationError("Recommendation id is not provided!")
-        if self.number_of_likes==0:
+        if self.number_of_likes == 0:
             raise DataValidationError("Recommendation already has 0 likes")
-        else:
-            self.number_of_likes -=1
+        self.number_of_likes -= 1
         db.session.commit()
 
     def delete(self):
@@ -114,7 +113,7 @@ class Recommendation(db.Model):
         """
         try:
             self.name = data["name"]
-            self.number_of_likes = data["number_of_likes"]  if "number_of_likes" in data else 0
+            self.number_of_likes = data["number_of_likes"] if "number_of_likes" in data else 0
             self.recommendation_id = data["recommendation_id"]
             self.recommendation_name = data["recommendation_name"]
             self.type = getattr(RecommendationType, data["type"])

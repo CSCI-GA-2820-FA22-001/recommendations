@@ -138,7 +138,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(recommendation.number_of_likes, 1)
         recommendation.dislike()
         self.assertEqual(recommendation.number_of_likes, 0)
-    
+
     def test_dislike_at_zero(self):
         """It should not dislike a recommendation that is at 0 likes"""
         recommendation = RecommendationFactory()
@@ -282,5 +282,4 @@ class TestRecommendationModel(unittest.TestCase):
     def test_find_or_404_not_found(self):
         """It should return 404 not found"""
         self.assertRaises(NotFound, Recommendation.find_or_404, 0)
-
-    
+        
