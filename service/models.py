@@ -40,7 +40,8 @@ class Recommendation(db.Model):
     recommendation_id = db.Column(db.Integer)
     recommendation_name = db.Column(db.String(63))
     type = db.Column(
-        db.Enum(RecommendationType), nullable=False, server_default=(RecommendationType.UPSELL.name)
+        db.Enum(RecommendationType),
+        nullable=False, server_default=(RecommendationType.UPSELL.name)
     )
     number_of_likes = db.Column(db.Integer)
 
@@ -95,12 +96,17 @@ class Recommendation(db.Model):
             self.recommendation_name = data["recommendation_name"]
             self.type = getattr(RecommendationType, data["type"])
         except AttributeError as error:
-            raise DataValidationError("Invalid attribute: " + error.args[0]) from error
+            raise DataValidationError(
+                                        "Invalid attribute: "
+                                        + error.args[0]) from error
         except KeyError as error:
-            raise DataValidationError("Invalid Recommendation: missing " + error.args[0]) from error
+            raise DataValidationError(
+                "Invalid Recommendation: missing " + error.args[0]) from error
         except TypeError as error:
             raise DataValidationError(
-                "Invalid Recommendation: body of request contained bad or no data " + str(error)
+                                    "Invalid Recommendation: body of "
+                                    + "request contained bad or no data "
+                                    + str(error)
             ) from error
         return self
 
@@ -146,18 +152,21 @@ class Recommendation(db.Model):
     def find_by_name(cls, name) -> list:
         """Returns all recmmendationModels with the given name
         Args:
-            name (string): the name of the recmmendationModels you want to match
+            name (string): the name of the recmmendationModels
+            you want to match
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
 
     @classmethod
-    def find_by_type(cls, recommendation_type: RecommendationType = RecommendationType.UPSELL) -> list:
+    def find_by_type(cls,
+                     recommendation_type: RecommendationType = RecommendationType.UPSELL) -> list:
         """Returns all recmmendationModels by their Type
         :param gender: values are ['UPSELL', 'CROSSSELL']
         :recommendation_type available: enum
         :return: a collection of recommendations that are available
         :rtype: list
         """
-        logger.info("Processing type query for %s ...", recommendation_type.name)
+        logger.info("Processing type query for %s ...",
+                    recommendation_type.name)
         return cls.query.filter(cls.type == recommendation_type)

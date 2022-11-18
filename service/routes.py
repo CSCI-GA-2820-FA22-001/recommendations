@@ -43,7 +43,9 @@ def create_recommendations():
     recommendation.deserialize(request.get_json())
     recommendation.create()
     message = recommendation.serialize()
-    location_url = url_for("get_recommendations", recommendation_id=recommendation.id, _external=True)
+    location_url = url_for(
+        "get_recommendations",
+        recommendation_id=recommendation.id, _external=True)
 
     app.logger.info("Recommendation with ID [%s] created.", recommendation.id)
     return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
@@ -87,7 +89,9 @@ def get_recommendations(recommendation_id):
     app.logger.info("Request for recommendations with id: %s", recommendation_id)
     recommendation = Recommendation.find(recommendation_id)
     if not recommendation:
-        abort(status.HTTP_404_NOT_FOUND, f"recommendations with id '{recommendation_id}' was not found.")
+        abort(
+                status.HTTP_404_NOT_FOUND,
+                f"recommendations with id '{recommendation_id}' was not found.")
     app.logger.info("Returning recommendation: %s", recommendation.recommendation_name)
     return jsonify(recommendation.serialize()), status.HTTP_200_OK
 
@@ -110,7 +114,9 @@ def update_recommendations(recommendation_id):
     recommendation.update()
     message = recommendation.serialize()
     app.logger.info("Recommendation with ID [%s] updated.", recommendation_id)
-    location_url = url_for("get_recommendations", recommendation_id=recommendation.id, _external=True)
+    location_url = url_for(
+                            "get_recommendations",
+                            recommendation_id=recommendation.id, _external=True)
     return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
 
 

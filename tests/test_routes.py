@@ -36,7 +36,6 @@ class TestRecommendationServer(TestCase):
         app.logger.setLevel(logging.CRITICAL)
         init_db(app)
 
-
     @classmethod
     def tearDownClass(cls):
         """ This runs once after the entire test suite """
@@ -180,7 +179,7 @@ class TestRecommendationServer(TestCase):
         for rec in data:
             self.assertEqual(rec["type"], test_type.name)
 
- ######################################################################
+    ######################################################################
     #  T E S T   S A D   P A T H S
     ######################################################################
 
@@ -199,7 +198,6 @@ class TestRecommendationServer(TestCase):
         response = self.client.post(BASE_URL, headers={'Content-Type': 'application/xml'})
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-
     def test_get_rec_not_found(self):
         """It should not Get a recommendation thats not found"""
         response = self.client.get(f"{BASE_URL}/0")
@@ -207,8 +205,6 @@ class TestRecommendationServer(TestCase):
         data = response.get_json()
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
-
-
 
     def test_update_recommendation_no_correct_id(self):
         """It should not get a recommendation that does not exist"""
