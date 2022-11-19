@@ -282,4 +282,3 @@ class TestRecommendationModel(unittest.TestCase):
     def test_find_or_404_not_found(self):
         """It should return 404 not found"""
         self.assertRaises(NotFound, Recommendation.find_or_404, 0)
-        
