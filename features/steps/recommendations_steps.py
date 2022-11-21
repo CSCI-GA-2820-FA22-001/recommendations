@@ -2,6 +2,7 @@ import requests
 from behave import given
 from compare import expect
 
+
 @given('the following recommendations')
 def step_impl(context):
     """ Delete all Recommendations and load new ones """
