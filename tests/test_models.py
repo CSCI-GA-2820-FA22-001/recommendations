@@ -1,5 +1,5 @@
 """
-Test cases for YourResourceModel Model
+Test cases for Recommendations Model
 
 """
 import os
@@ -18,6 +18,7 @@ DATABASE_URI = os.getenv(
 #  Recommendations   M O D E L   T E S T   C A S E S
 ######################################################################
 # pylint: disable=too-many-public-methods
+# pylint: disable=invalid-name
 
 
 class TestRecommendationModel(unittest.TestCase):
@@ -84,7 +85,7 @@ class TestRecommendationModel(unittest.TestCase):
         """It should Read a recommendation"""
         recommendation = RecommendationFactory()
         logging.debug(recommendation)
-        recommendation.id = None  # pylint: disable=invalid-name
+        recommendation.id = None  
         recommendation.create()
         self.assertIsNotNone(recommendation.id)
         # Fetch it back
