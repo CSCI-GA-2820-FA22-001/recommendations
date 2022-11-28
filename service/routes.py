@@ -200,7 +200,7 @@ def check_content_type(content_type):
 ######################################################################
 
 
-@app.route("/healthcheck")
+@app.route("/health")
 def healthcheck():
     """Let them know our heart is still beating"""
     return jsonify(status=200, message="Healthy"), status.HTTP_200_OK
