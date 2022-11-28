@@ -2,6 +2,7 @@
 Test cases for Recommendations Model
 
 """
+# pylint: disable=invalid-name
 import os
 import logging
 import unittest
