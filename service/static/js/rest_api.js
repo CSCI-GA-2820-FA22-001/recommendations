@@ -8,20 +8,20 @@ $(function () {
     function update_form_data(res) {
         $("#recommendation_id").val(res.id);
         $("#recommendation_name").val(res.name);
-        $("#recommended_product_id").val(res.recommendation_id);
-        $("#recommended_product_name").val(res.recommendation_name);
-        $("#type").val(res.type);
-        $("#number_of_likes").val(res.number_of_likes);
+        $("#recommendation_recommendation_id").val(res.recommendation_id);
+        $("#recommendation_recommendation_name").val(res.recommendation_name);
+        $("#recommendation_type").val(res.type);
+        $("#recommendation_number_of_likes").val(res.number_of_likes);
     }
 
     /// Clears all form fields
     function clear_form_data() {
         $("#recommendation_name").val("");
         $("#recommendation_id").val("");
-        $("#recommended_product_id").val("");
-        $("#recommended_product_name").val("");
-        $("#type").val("");
-        $("#number_of_likes").val("");
+        $("#recommendation_recommendation_id").val("");
+        $("#recommendation_recommendation_name").val("");
+        $("#recommendation_type").val("");
+        $("#recommendation_number_of_likes").val("");
     }
 
     // Updates the flash message area
@@ -37,10 +37,10 @@ $(function () {
     $("#create-btn").click(function () {
 
         let name = $("#recommendation_name").val();
-        let rec_product_id = $("#recommended_product_id").val();
-        let rec_product_name = $("#recommended_product_name").val()
-        let type = $("#type").val();
-        let number_of_likes = $("#number_of_likes").val();
+        let rec_product_id = $("#recommendation_recommendation_id").val();
+        let rec_product_name = $("#recommendation_recommendation_name").val()
+        let type = $("#recommendation_type").val();
+        let number_of_likes = $("#recommendation_number_of_likes").val();
 
         let data = {
             "name": name,
@@ -78,10 +78,10 @@ $(function () {
 
         let recommendation_id = $("#recommendation_id").val();
         let name = $("#recommendation_name").val();
-        let rec_product_id = $("#recommended_product_id").val();
-        let rec_product_name = $("#recommended_product_name").val()
-        let type = $("#type").val();
-        let number_of_likes = $("#number_of_likes").val();
+        let rec_product_id = $("#recommendation_recommendation_id").val();
+        let rec_product_name = $("#recommendation_recommendation_name").val()
+        let type = $("#recommendation_type").val();
+        let number_of_likes = $("#recommendation_number_of_likes").val();
 
         let data = {
             "name": name,
@@ -185,7 +185,7 @@ $(function () {
     $("#search-btn").click(function () {
 
         let name = $("#recommendation_name").val();
-        let type = $("#type").val();
+        let type = $("#recommendation_type").val();
         
         let queryString = ""
 
@@ -217,7 +217,7 @@ $(function () {
             table += '<th class="col-md-2">ID</th>'
             table += '<th class="col-md-2">Name</th>'
             table += '<th class="col-md-2">Recommended Product ID</th>'
-            table += '<th class="col-md-2">Recommended Product/th>'
+            table += '<th class="col-md-2">Recommended Product</th>'
             table += '<th class="col-md-2">Type</th>'
             table += '<th class="col-md-2">Number of Likes</th>'
             table += '</tr></thead><tbody>'
