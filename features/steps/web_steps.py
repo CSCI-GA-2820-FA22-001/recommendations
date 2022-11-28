@@ -13,7 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support import expected_conditions
 
-ID_PREFIX = 'recommendations_'
+ID_PREFIX = 'recommendation_'
 
 
 @when('I visit the "home page"')
