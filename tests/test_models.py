@@ -1,7 +1,8 @@
 """
-Test cases for YourResourceModel Model
+Test cases for Recommendations Model
 
 """
+# pylint: disable=invalid-name
 import os
 import logging
 import unittest
@@ -18,6 +19,7 @@ DATABASE_URI = os.getenv(
 #  Recommendations   M O D E L   T E S T   C A S E S
 ######################################################################
 # pylint: disable=too-many-public-methods
+# pylint: disable=invalid-name
 
 
 class TestRecommendationModel(unittest.TestCase):
@@ -84,7 +86,7 @@ class TestRecommendationModel(unittest.TestCase):
         """It should Read a recommendation"""
         recommendation = RecommendationFactory()
         logging.debug(recommendation)
-        recommendation.id = None
+        # recommendation.id = None  # pylint: disable=invalid-name
         recommendation.create()
         self.assertIsNotNone(recommendation.id)
         # Fetch it back
@@ -97,7 +99,7 @@ class TestRecommendationModel(unittest.TestCase):
         """It should Update a recommendation"""
         recommendation = RecommendationFactory()
         logging.debug(recommendation)
-        recommendation.id = None
+        recommendation.id = None  # pylint: disable=invalid-name
         recommendation.create()
         logging.debug(recommendation)
         self.assertIsNotNone(recommendation.id)

@@ -19,13 +19,7 @@ from . import app
 def index():
     """ Root URL response """
     app.logger.info("Request for Root URL")
-    return (
-        jsonify(
-            name="Recommendations REST API Service",
-            version="1.0",
-        ),
-        status.HTTP_200_OK,
-    )
+    return app.send_static_file("index.html")
 
 
 ######################################################################
