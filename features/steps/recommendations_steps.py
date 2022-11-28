@@ -16,7 +16,6 @@ def step_impl(context):
     # load the database with the new recommendations
     for row in context.table:
         payload = {
-            "id": row['id'],
             "name": row['name'],
             "recommendation_id": row['recommendation_id'],
             "recommendation_name": row['recommendation_name'],
