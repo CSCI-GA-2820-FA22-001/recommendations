@@ -103,7 +103,7 @@ The project uses *honcho* which gets it's commands from the `Procfile`. To start
 $ honcho start
 ```
 
-You should be able to reach the service at: http://localhost:8000. The port that is used is controlled by an environment variable defined in the `.flaskenv` file which Flask uses to load it's configuration from the environment by default.
+You should be able to reach the service at: http://localhost:8080. The port that is used is controlled by an environment variable defined in the `.flaskenv` file which Flask uses to load it's configuration from the environment by default.
 
 ## Shutdown development environment
 
@@ -133,7 +133,7 @@ $ vagrant destroy
 
 All APIs are have common route prefix 
 ```shell
-http://localhost:8000/recommendations
+http://localhost:8080/recommendations
 ```
 #### CREATE
 This API creates recommendations.
