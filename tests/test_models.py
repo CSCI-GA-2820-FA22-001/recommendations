@@ -85,7 +85,7 @@ class TestRecommendationModel(unittest.TestCase):
         """It should Read a recommendation"""
         recommendation = RecommendationFactory()
         logging.debug(recommendation)
-        recommendation.id = None
+        recommendation.id = None # pylint: disable=invalid-name
         recommendation.create()
         self.assertIsNotNone(recommendation.id)
         # Fetch it back
