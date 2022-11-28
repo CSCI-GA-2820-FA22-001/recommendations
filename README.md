@@ -5,6 +5,7 @@
 
 [![Build Status](https://github.com/CSCI-GA-2820-FA22-001/recommendations/actions/workflows/tdd.yml/badge.svg)](https://github.com/CSCI-GA-2820-FA22-001/recommendations/actions)
 [![codecov](https://codecov.io/gh/CSCI-GA-2820-FA22-001/recommendations/branch/master/graph/badge.svg?token=VQ46QSC8R9)](https://codecov.io/gh/CSCI-GA-2820-FA22-001/recommendations)
+[![BDD Tests](https://github.com/CSCI-GA-2820-FA22-001/recommendations/actions/workflows/bdd.yml/badge.svg)](https://github.com/CSCI-GA-2820-FA22-001/recommendations/actions/workflows/bdd.yml)
 
 ## Prerequisite Software Installation
 
