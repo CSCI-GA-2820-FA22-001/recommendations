@@ -16,16 +16,7 @@ Scenario: The server is running
     Then I should see "Recommendations Demo RESTful Service" in the title
     And I should not see "404 Not Found"
 
-Scenario: List all recommendations
-    When I visit the "Home Page"
-    And I press the "Search" button
-    Then I should see the message "Success"
-    And I should see "fido" in the results
-    And I should see "kitty" in the results
-    And I should not see "reco" in the results
-
-
-Scenario: Create a recommendations
+Scenario: Create a Recommendation
     When I visit the "Home Page"
     And I set the "Name" to "Happy"
     And I set the "Recommendation Id" to "2"
@@ -47,6 +38,14 @@ Scenario: Create a recommendations
     And I should see "Cross Sell" in the "Type" dropdown
     And I should see "4" in the "Number Of Likes" field
     And I should see "2" in the "Recommendation Id" field
+
+Scenario: List all recommendations
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "fido" in the results
+    And I should see "kitty" in the results
+    And I should not see "reco" in the results
 
 
 Scenario: List all recommendations by name
@@ -88,3 +87,34 @@ Scenario: Update a Pet
     And I should not see "fido" in the results
 
 
+Scenario: Delete a Recommendation
+    When I visit the "Home Page"
+    And I set the "Name" to "Happy"
+    And I set the "Recommendation Id" to "2"
+    And I set the "Recommendation Name" to "Happiness"
+    And I select "Cross Sell" in the "Type" dropdown
+    And I set the "Number Of Likes" to "4"
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    Then the "Id" field should be empty
+    And the "Name" field should be empty
+    And the "Type" field should be empty
+    When I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "Happy" in the "Name" field
+    And I should see "Happiness" in the "Recommendation Name" field
+    And I should see "Cross Sell" in the "Type" dropdown
+    And I should see "4" in the "Number Of Likes" field
+    And I should see "2" in the "Recommendation Id" field
+    When I copy the "Id" field
+    When I paste the "Id" field
+    And I press the "Delete" button
+    Then I should see the message "Recommendation has been Deleted!"
+    Then the "Id" field should be empty
+    And the "Name" field should be empty
+    When I paste the "ID" field
+    And I press the "Retrieve" button
+    Then I should see the message "404 Not Found"
