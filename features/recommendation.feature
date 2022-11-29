@@ -24,6 +24,23 @@ Scenario: List all recommendations
     And I should see "kitty" in the results
     And I should not see "reco" in the results
 
+
+Scenario: List all recommendations by name
+    When I visit the "Home Page"
+    And I set the "name" to "fido"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "fido" in the results
+    And I should not see "kitty" in the results
+
+Scenario: List all recommendations by type
+    When I visit the "Home Page"
+    And I select "Cross Sell" in the "type" dropdown
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "fido" in the results
+    And I should not see "kitty" in the results
+
 Scenario: Update a Pet
     When I visit the "Home Page"
     And I set the "Name" to "fido"
@@ -45,3 +62,4 @@ Scenario: Update a Pet
     Then I should see the message "Success"
     And I should see "Boxer" in the results
     And I should not see "fido" in the results
+
