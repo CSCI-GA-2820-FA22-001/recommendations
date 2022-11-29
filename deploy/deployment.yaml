@@ -24,7 +24,7 @@ spec:
       restartPolicy: Always
       containers:
       - name: recommendations-cf
-        image: us.icr.io/nyu_devops/recommendations-cf:1.0
+        image: us.icr.io/devops_recommendations/recommendations-cf:1.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
