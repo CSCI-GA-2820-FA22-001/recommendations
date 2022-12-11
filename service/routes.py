@@ -5,9 +5,10 @@ Describe what your service does here
 """
 
 from flask import jsonify, request, url_for, abort
+from flask_restx import Api, Resource, fields, reqparse
 from service.models import Recommendation, RecommendationType
 from .common import status  # HTTP Status Codes
-from flask_restx import Api, Resource, fields, reqparse, inputs
+
 
 # Import Flask application
 from . import app
@@ -23,6 +24,8 @@ def index():
     return app.send_static_file("index.html")
 
 # Define the model so that the docs reflect what can be sent
+
+
 api = Api(app, 
         version='1.0.0', 
         title='Recommendation REST API Service',
