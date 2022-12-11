@@ -179,14 +179,15 @@ $(function () {
         $("#flash_message").empty();
 
         let ajax = $.ajax({
-            type: "POST",
+            type: "PUT",
             url: `/recommendations/${recommendation_id}/like`,
             contentType: "application/json",
             data: '',
         })
 
         ajax.done(function(res){
-            clear_form_data()
+
+            update_form_data(res)
             flash_message("Recommendation has been Liked!")
         });
 
@@ -206,14 +207,14 @@ $(function () {
         $("#flash_message").empty();
 
         let ajax = $.ajax({
-            type: "POST",
+            type: "PUT",
             url: `/recommendations/${recommendation_id}/dislike`,
             contentType: "application/json",
             data: '',
         })
 
         ajax.done(function(res){
-            clear_form_data()
+            update_form_data(res)
             flash_message("Recommendation has been Disliked!")
         });
 
