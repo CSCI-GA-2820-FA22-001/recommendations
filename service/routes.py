@@ -7,6 +7,7 @@ Describe what your service does here
 from flask import jsonify, request, url_for, abort
 from service.models import Recommendation, RecommendationType
 from .common import status  # HTTP Status Codes
+from flask_restx import Api, Resource, fields, reqparse, inputs
 
 # Import Flask application
 from . import app
@@ -20,6 +21,122 @@ def index():
     """ Root URL response """
     app.logger.info("Request for Root URL")
     return app.send_static_file("index.html")
+
+# Define the model so that the docs reflect what can be sent
+api = Api(app, 
+        version='1.0.0', 
+        title='Recommendation REST API Service',
+        description='This is a Recommendation server.',
+        default='recommendations',
+        default_label='Recommendation operations',
+        doc='/apidocs',
+        prefix='/api'
+        )
+
+create_model = api.model(
+    'Recommendation',
+    {
+        'recommendation_name': fields.String(required=True,
+            description='The name of the recommendation'),
+        'recommendation_type': fields.String(required=True,
+            description='The type of the recommendation'),
+        'recommendation_description': fields.String(required=True,
+            description='The description of the recommendation'),
+        'recommendation_url': fields.String(required=True,
+            description='The url of the recommendation'),
+        'recommendation_image_url': fields.String(required=True,
+            description='The image url of the recommendation')
+    }
+)
+
+Recommendation_model = api.inherit(
+    'Recommendation',
+    create_model,
+    {
+        'id': fields.Integer(readOnly=True,
+            description='The unique id assigned internally by service'),
+    }
+)
+
+#query string arguments
+recommendation_args = reqparse.RequestParser()
+recommendation_args.add_argument('id', type=int, required=False, help='List recommendations by id')
+recommendation_args.add_argument('name', type=str, required=False, help='List recommendations by name')
+
+######################################################################
+#  PATH: /recommendations/{id}
+######################################################################
+@api.route('/recommendations/<int:id>')
+@api.param('id', 'The Recommendation identifier')
+@api.response(404, 'Recommendation not found')
+class RecommendationResource(Resource):
+    """
+    RecommendationResource class
+
+    Allows the manipulation of a single Recommendation
+    GET /recommendations{id} - Returns a Recommendation with the id
+    PUT /recommendations{id} - Update a Recommendation with the id
+    DELETE /recommendations{id} -  Deletes a Recommendation with the id
+    """
+    
+    #------------------------------------------------------------------
+    # RETRIEVE A RECOMMENDATION
+    #------------------------------------------------------------------
+    @api.doc('get_recommendations')
+    @api.marshal_with(Recommendation_model)
+    def get(self, id):
+        """
+        Retrieve a single Recommendation
+
+        This endpoint will return a Recommendation based on it's id
+        """
+        app.logger.info("Request for recommendation with id: %s", id)
+        recommendation = Recommendation.find(id)
+        if not recommendation:
+            api.abort(status.HTTP_404_NOT_FOUND, f"Recommendation with id '{id}' was not found.")
+        app.logger.info("Returning recommendation: %s", recommendation.recommendation_name)
+        return recommendation.serialize(), status.HTTP_200_OK
+
+    #------------------------------------------------------------------
+    # UPDATE AN EXISTING RECOMMENDATION
+    #------------------------------------------------------------------
+    @api.doc('update_recommendations')
+    @api.response(400, 'The posted Recommendation data was not valid')
+    @api.expect(Recommendation_model)
+    @api.marshal_with(Recommendation_model, code=200)
+    def put(self, id):
+        """
+        Update a Recommendation
+
+        This endpoint will update a Recommendation based the body that is posted
+        """
+        app.logger.info("Request to update recommendation with id: %s", id)
+        check_content_type("application/json")
+        recommendation = Recommendation.find(id)
+        if not recommendation:
+            api.abort(status.HTTP_404_NOT_FOUND, f"Recommendation with id '{id}' was not found.")
+        recommendation.deserialize(request.get_json())
+        recommendation.id = id
+        recommendation.save()
+        app.logger.info("Recommendation with ID [%s] updated.", id)
+        return recommendation.serialize(), status.HTTP_200_OK
+
+    #------------------------------------------------------------------
+    # DELETE A RECOMMENDATION
+    #------------------------------------------------------------------
+    @api.doc('delete_recommendations')
+    @api.response(204, 'Recommendation deleted')
+    def delete(self, id):
+        """
+        Delete a Recommendation
+
+        This endpoint will delete a Recommendation based the id specified in the path
+        """
+        app.logger.info("Request to delete recommendation with id: %s", id)
+        recommendation = Recommendation.find(id)
+        if recommendation:
+            recommendation.delete()
+        return '', status.HTTP_204_NO_CONTENT
 
 
 ######################################################################
