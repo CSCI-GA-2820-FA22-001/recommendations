@@ -64,7 +64,7 @@ Scenario: List all recommendations by type
     And I should see "fido" in the results
     And I should not see "kitty" in the results
 
-Scenario: Update a Pet
+Scenario: Update a Recommendation
     When I visit the "Home Page"
     And I set the "Name" to "fido"
     And I press the "Search" button
@@ -86,6 +86,19 @@ Scenario: Update a Pet
     And I should see "Boxer" in the results
     And I should not see "fido" in the results
 
+Scenario: Like and Dislike a recommendation
+    When I visit the "Home Page"
+    And I set the "Name" to "Happy"
+    And I set the "Recommendation Id" to "2"
+    And I set the "Recommendation Name" to "Happiness"
+    And I select "Cross Sell" in the "Type" dropdown
+    And I set the "Number Of Likes" to "4"
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I press the "like" button
+    Then I should see "5" in the "Number of Likes" field
+    When I press the "dislike" button
+    Then I should see "4" in the "Number of Likes" field
 
 Scenario: Delete a Recommendation
     When I visit the "Home Page"
