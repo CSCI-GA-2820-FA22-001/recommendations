@@ -26,29 +26,31 @@ def index():
 # Define the model so that the docs reflect what can be sent
 
 
-api = Api(app, 
-        version='1.0.0', 
-        title='Recommendation REST API Service',
-        description='This is a Recommendation server.',
-        default='recommendations',
-        default_label='Recommendation operations',
-        doc='/apidocs',
-        prefix='/api'
-        )
+api = Api(app,
+          version='1.0.0',
+          title='Recommendation REST API Service',
+          description='This is a Recommendation server.',
+          default='recommendations',
+          default_label='Recommendation operations',
+          doc='/apidocs',
+          prefix='/api'
+          )
 
 create_model = api.model(
     'Recommendation',
     {
+        'recommendation_id': fields.Integer(required=True,
+                                            description='The id of the recommendation'),
         'recommendation_name': fields.String(required=True,
-            description='The name of the recommendation'),
+                                             description='The name of the recommendation'),
         'recommendation_type': fields.String(required=True,
-            description='The type of the recommendation'),
+                                             description='The type of the recommendation'),
         'recommendation_description': fields.String(required=True,
-            description='The description of the recommendation'),
+                                                    description='The description of the recommendation'),
         'recommendation_url': fields.String(required=True,
-            description='The url of the recommendation'),
+                                            description='The url of the recommendation'),
         'recommendation_image_url': fields.String(required=True,
-            description='The image url of the recommendation')
+                                                  description='The image url of the recommendation')
     }
 )
 
@@ -57,57 +59,63 @@ Recommendation_model = api.inherit(
     create_model,
     {
         'id': fields.Integer(readOnly=True,
-            description='The unique id assigned internally by service'),
+                             description='The unique id assigned internally by service'),
     }
 )
 
-#query string arguments
+# query string arguments
 recommendation_args = reqparse.RequestParser()
-recommendation_args.add_argument('id', type=int, required=False, help='List recommendations by id')
-recommendation_args.add_argument('name', type=str, required=False, help='List recommendations by name')
+recommendation_args.add_argument(
+    'recommendation_id', type=int, required=False, help='List recommendations by id')
+recommendation_args.add_argument(
+    'recommendation_name', type=str, required=False, help='List recommendations by name')
 
 ######################################################################
 #  PATH: /recommendations/{id}
 ######################################################################
-@api.route('/recommendations/<int:id>')
-@api.param('id', 'The Recommendation identifier')
+
+
+@api.route('/recommendations/<int:recommendation_id>')
+@api.param('recommendation_id', 'The Recommendation identifier')
 @api.response(404, 'Recommendation not found')
 class RecommendationResource(Resource):
     """
     RecommendationResource class
 
     Allows the manipulation of a single Recommendation
-    GET /recommendations{id} - Returns a Recommendation with the id
-    PUT /recommendations{id} - Update a Recommendation with the id
-    DELETE /recommendations{id} -  Deletes a Recommendation with the id
+    GET /recommendations{recommendation_id} - Returns a Recommendation with the id
+    PUT /recommendations{recommendation_id} - Update a Recommendation with the id
+    DELETE /recommendations{recommendation_id} -  Deletes a Recommendation with the id
     """
-    
-    #------------------------------------------------------------------
+
+    # ------------------------------------------------------------------
     # RETRIEVE A RECOMMENDATION
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     @api.doc('get_recommendations')
     @api.marshal_with(Recommendation_model)
-    def get(self, id):
+    def get(self, recommendation_id):
         """
         Retrieve a single Recommendation
 
         This endpoint will return a Recommendation based on it's id
         """
-        app.logger.info("Request for recommendation with id: %s", id)
-        recommendation = Recommendation.find(id)
+        app.logger.info("Request for recommendation with id: %s", recommendation_id)
+        recommendation = Recommendation.find(recommendation_id)
         if not recommendation:
-            api.abort(status.HTTP_404_NOT_FOUND, f"Recommendation with id '{id}' was not found.")
-        app.logger.info("Returning recommendation: %s", recommendation.recommendation_name)
+            api.abort(status.HTTP_404_NOT_FOUND,
+                      f"Recommendation with id '{recommendation_id}' was not found.")
+        app.logger.info("Returning recommendation: %s",
+                        recommendation.recommendation_name)
         return recommendation.serialize(), status.HTTP_200_OK
 
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # UPDATE AN EXISTING RECOMMENDATION
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     @api.doc('update_recommendations')
     @api.response(400, 'The posted Recommendation data was not valid')
     @api.expect(Recommendation_model)
     @api.marshal_with(Recommendation_model, code=200)
-    def put(self, id):
+    def put(self, recommendation_id):
         """
         Update a Recommendation
 
@@ -115,28 +123,29 @@ class RecommendationResource(Resource):
         """
         app.logger.info("Request to update recommendation with id: %s", id)
         check_content_type("application/json")
-        recommendation = Recommendation.find(id)
+        recommendation = Recommendation.find(recommendation_id)
         if not recommendation:
-            api.abort(status.HTTP_404_NOT_FOUND, f"Recommendation with id '{id}' was not found.")
+            api.abort(status.HTTP_404_NOT_FOUND,
+                      f"Recommendation with id '{recommendation_id}' was not found.")
         recommendation.deserialize(request.get_json())
-        recommendation.id = id
+        recommendation.recommendation_id = recommendation_id
         recommendation.save()
-        app.logger.info("Recommendation with ID [%s] updated.", id)
+        app.logger.info("Recommendation with ID [%s] updated.", recommendation_id)
         return recommendation.serialize(), status.HTTP_200_OK
 
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # DELETE A RECOMMENDATION
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     @api.doc('delete_recommendations')
     @api.response(204, 'Recommendation deleted')
-    def delete(self, id):
+    def delete(self, recommendation_id):
         """
         Delete a Recommendation
 
         This endpoint will delete a Recommendation based the id specified in the path
         """
-        app.logger.info("Request to delete recommendation with id: %s", id)
-        recommendation = Recommendation.find(id)
+        app.logger.info("Request to delete recommendation with id: %s", recommendation_id)
+        recommendation = Recommendation.find(recommendation_id)
         if recommendation:
             recommendation.delete()
         return '', status.HTTP_204_NO_CONTENT
@@ -200,13 +209,15 @@ def get_recommendations(recommendation_id):
     Retrieve a single recommendation
     This endpoint will return a recommendations based on it's id
     """
-    app.logger.info("Request for recommendations with id: %s", recommendation_id)
+    app.logger.info("Request for recommendations with id: %s",
+                    recommendation_id)
     recommendation = Recommendation.find(recommendation_id)
     if not recommendation:
         abort(
-                status.HTTP_404_NOT_FOUND,
-                f"recommendations with id '{recommendation_id}' was not found.")
-    app.logger.info("Returning recommendation: %s", recommendation.recommendation_name)
+            status.HTTP_404_NOT_FOUND,
+            f"recommendations with id '{recommendation_id}' was not found.")
+    app.logger.info("Returning recommendation: %s",
+                    recommendation.recommendation_name)
     return jsonify(recommendation.serialize()), status.HTTP_200_OK
 
 
@@ -219,18 +230,20 @@ def update_recommendations(recommendation_id):
     Update a Recommendation
     This endpoint will update a Recommendation based the data in the body that is posted
     """
-    app.logger.info("Request to update recommendation with id: %s", recommendation_id)
+    app.logger.info(
+        "Request to update recommendation with id: %s", recommendation_id)
     check_content_type("application/json")
     recommendation = Recommendation.find(recommendation_id)
     if recommendation is None:
-        abort(status.HTTP_404_NOT_FOUND, f"Recommendation id {recommendation_id} does not exist")
+        abort(status.HTTP_404_NOT_FOUND,
+              f"Recommendation id {recommendation_id} does not exist")
     recommendation.deserialize(request.get_json())
     recommendation.update()
     message = recommendation.serialize()
     app.logger.info("Recommendation with ID [%s] updated.", recommendation_id)
     location_url = url_for(
-                            "get_recommendations",
-                            recommendation_id=recommendation.id, _external=True)
+        "get_recommendations",
+        recommendation_id=recommendation.id, _external=True)
     return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
 
 
@@ -243,12 +256,14 @@ def delete_recommendation(recommendation_id):
     Delete a Recommendation
     This endpoint will delete a Recommendation based the id specified in the path
     """
-    app.logger.info("Request to delete recommendation with id: %s", recommendation_id)
+    app.logger.info(
+        "Request to delete recommendation with id: %s", recommendation_id)
     recommendation = Recommendation.find(recommendation_id)
     if recommendation:
         recommendation.delete()
 
-    app.logger.info("Recommendation with ID [%s] delete complete.", recommendation_id)
+    app.logger.info(
+        "Recommendation with ID [%s] delete complete.", recommendation_id)
     return "", status.HTTP_204_NO_CONTENT
 
 
@@ -261,14 +276,17 @@ def like_recommendation(recommendation_id):
     Like a Recommendation
     This endpoint will increment a Recommendation like counter based the id specified in the path
     """
-    app.logger.info("Request to like recommendation with id: %s", recommendation_id)
+    app.logger.info(
+        "Request to like recommendation with id: %s", recommendation_id)
     recommendation = Recommendation.find(recommendation_id)
     if recommendation is None:
-        abort(status.HTTP_404_NOT_FOUND, f"Recommendation id {recommendation_id} does not exist")
+        abort(status.HTTP_404_NOT_FOUND,
+              f"Recommendation id {recommendation_id} does not exist")
     recommendation.like()
     message = recommendation.serialize()
     app.logger.info("Recommendation with ID [%s] liked.", recommendation_id)
-    location_url = url_for("get_recommendations", recommendation_id=recommendation.id, _external=True)
+    location_url = url_for("get_recommendations",
+                           recommendation_id=recommendation.id, _external=True)
     return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
 
 
@@ -281,14 +299,17 @@ def dislike_recommendation(recommendation_id):
     Like a Recommendation
     This endpoint will decrement a Recommendation like counter based the id specified in the path
     """
-    app.logger.info("Request to like recommendation with id: %s", recommendation_id)
+    app.logger.info(
+        "Request to like recommendation with id: %s", recommendation_id)
     recommendation = Recommendation.find(recommendation_id)
     if recommendation is None:
-        abort(status.HTTP_404_NOT_FOUND, f"Recommendation id {recommendation_id} does not exist")
+        abort(status.HTTP_404_NOT_FOUND,
+              f"Recommendation id {recommendation_id} does not exist")
     recommendation.dislike()
     message = recommendation.serialize()
     app.logger.info("Recommendation with ID [%s] liked.", recommendation_id)
-    location_url = url_for("get_recommendations", recommendation_id=recommendation.id, _external=True)
+    location_url = url_for("get_recommendations",
+                           recommendation_id=recommendation.id, _external=True)
     return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
 
 
@@ -309,7 +330,8 @@ def check_content_type(content_type):
     if request.headers["Content-Type"] == content_type:
         return
 
-    app.logger.error("Invalid Content-Type: %s", request.headers["Content-Type"])
+    app.logger.error("Invalid Content-Type: %s",
+                     request.headers["Content-Type"])
     abort(
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
         f"Content-Type must be {content_type}",
