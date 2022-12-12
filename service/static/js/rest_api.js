@@ -54,7 +54,7 @@ $(function () {
         
         let ajax = $.ajax({
             type: "POST",
-            url: "/recommendations",
+            url: "/api/recommendations",
             contentType: "application/json",
             data: JSON.stringify(data),
         });
@@ -95,7 +95,7 @@ $(function () {
 
         let ajax = $.ajax({
                 type: "PUT",
-                url: `/recommendations/${recommendation_id}`,
+                url: `/api/recommendations/${recommendation_id}`,
                 contentType: "application/json",
                 data: JSON.stringify(data)
             })
@@ -123,7 +123,7 @@ $(function () {
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/recommendations/${recommendation_id}`,
+            url: `/api/recommendations/${recommendation_id}`,
             contentType: "application/json",
             data: ''
         })
@@ -136,7 +136,7 @@ $(function () {
 
         ajax.fail(function(res){
             clear_form_data()
-            flash_message(res.responseJSON.message)
+            flash_message(res.statusText)
         });
 
     });
@@ -153,7 +153,7 @@ $(function () {
 
         let ajax = $.ajax({
             type: "DELETE",
-            url: `/recommendations/${recommendation_id}`,
+            url: `/api/recommendations/${recommendation_id}`,
             contentType: "application/json",
             data: '',
         })
@@ -180,7 +180,7 @@ $(function () {
 
         let ajax = $.ajax({
             type: "PUT",
-            url: `/recommendations/${recommendation_id}/like`,
+            url: `/api/recommendations/${recommendation_id}/like`,
             contentType: "application/json",
             data: '',
         })
@@ -208,7 +208,7 @@ $(function () {
 
         let ajax = $.ajax({
             type: "PUT",
-            url: `/recommendations/${recommendation_id}/dislike`,
+            url: `/api/recommendations/${recommendation_id}/dislike`,
             contentType: "application/json",
             data: '',
         })
@@ -259,7 +259,7 @@ $(function () {
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/recommendations?${queryString}`,
+            url: `/api/recommendations?${queryString}`,
             contentType: "application/json",
             data: ''
         })

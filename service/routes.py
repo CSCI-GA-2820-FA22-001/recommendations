@@ -11,7 +11,7 @@ from .common import status  # HTTP Status Codes
 
 
 # Import Flask application
-from . import app, api
+from . import app
 
 
 ######################################################################
@@ -27,16 +27,16 @@ def index():
 create_model = api.model(
     'Recommendation',
     {
-        'name': fields.String(required=True,
-                              description='The name of the recommendation'),
-        'recommendation_id': fields.Integer(required=True,
-                                            description='The type of the recommendation'),
-        'recommendation_name': fields.String(required=True,
-                                            description='The name of the recommendation'),
-        'number_of_likes': fields.Integer(required=False
-                                            ,description='The type of the recommendation'),
-        'type': fields.String(enum=RecommendationType,
-                              description='The type of the recommendation'),
+        'name': fields.String(required=True, 
+                                            description='The name of the recommendation'), 
+        'recommendation_id': fields.Integer(required=True, 
+                                            description='The id of the recommended product'), 
+        'recommendation_name': fields.String(required=True, 
+                                            description='The name of the recommended product'), 
+        'number_of_likes': fields.Integer(required=False, 
+                                            description='The number of likes of the recommendation'), 
+        'type': fields.String(enum=RecommendationType._member_names_,
+                                            description='The type of the recommendation'), 
     }
 )
 
@@ -79,7 +79,7 @@ def healthcheck():
 #  PATH: /recommendations/{recommendation_id}
 ######################################################################
 
-@api.route('/recommendations/<int:recommendation_id>')
+@api.route('/recommendations/<int:recommendation_id>', strict_slashes=False)
 @api.param('recommendation_id',"The recommendation id")
 class RecommendationResource(Resource):
     """
@@ -105,8 +105,7 @@ class RecommendationResource(Resource):
                     status.HTTP_404_NOT_FOUND,
                     f"recommendations with id '{recommendation_id}' was not found.")
         app.logger.info("Returning recommendation: %s", recommendation.recommendation_name)
-        return jsonify(recommendation.serialize()), status.HTTP_200_OK
-
+        return recommendation.serialize(), status.HTTP_200_OK
 
     @api.doc('update_recommendations')
     @api.response(404, 'Recommendation not found')
@@ -129,9 +128,9 @@ class RecommendationResource(Resource):
         message = recommendation.serialize()
         app.logger.info("Recommendation with ID [%s] updated.", recommendation_id)
         location_url = api.url_for(
-                                "get_recommendations",
+                                RecommendationResource,
                                 recommendation_id=recommendation.id, _external=True)
-        return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
+        return message, status.HTTP_200_OK, {"Location": location_url}
 
     @api.doc('delete_recommendations')
     @api.response(204, 'Recommendation deleted')
@@ -150,8 +149,9 @@ class RecommendationResource(Resource):
             "Recommendation with ID [%s] delete complete.", recommendation_id)
         return "", status.HTTP_204_NO_CONTENT
 
+
 @api.route('/recommendations', strict_slashes=False)
-@api.param('recommendation_id',"The recommendation id")
+@api.param('recommendation_id', "The recommendation id")
 class RecommendationCollection(Resource):
     """
     RecommendationCollection class
@@ -180,7 +180,8 @@ class RecommendationCollection(Resource):
             recs = Recommendation.all()
         results = [rec.serialize() for rec in recs]
         app.logger.info("Returning %d recommendations", len(results))
-        return jsonify(results), status.HTTP_200_OK
+        app.logger.info(results)
+        return results, status.HTTP_200_OK
 
     @api.doc('create_recommendations')
     @api.response(201, 'Recommendation created successfully')
@@ -201,7 +202,8 @@ class RecommendationCollection(Resource):
             RecommendationResource,
             recommendation_id=recommendation.id, _external=True)
         app.logger.info("Recommendation with ID [%s] created.", recommendation.id)
-        return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
+        return message, status.HTTP_201_CREATED, {"Location": location_url}
+
 
 @api.route('/recommendations/<int:recommendation_id>/like', strict_slashes=False)
 @api.param('recommendation_id',"The recommendation id")
@@ -232,7 +234,7 @@ class RecommendationLikeResource(Resource):
         app.logger.info("Recommendation with ID [%s] liked.", recommendation_id)
         location_url = api.url_for(RecommendationResource,
                             recommendation_id=recommendation.id, _external=True)
-        return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
+        return message, status.HTTP_200_OK, {"Location": location_url}
 
 @api.route('/recommendations/<int:recommendation_id>/dislike', strict_slashes=False)
 @api.param('recommendation_id',"The recommendation id")
@@ -260,7 +262,7 @@ class RecommendationDislikeResource(Resource):
         app.logger.info("Recommendation with ID [%s] disliked.", recommendation_id)
         location_url = api.url_for(RecommendationResource,
                             recommendation_id=recommendation.id, _external=True)
-        return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
+        return message, status.HTTP_200_OK, {"Location": location_url}
 
 def check_content_type(content_type):
     """Checks that the media type is correct"""
