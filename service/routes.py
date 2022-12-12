@@ -32,9 +32,9 @@ create_model = api.model(
         'recommendation_id': fields.Integer(required=True,
                                             description='The type of the recommendation'),
         'recommendation_name': fields.String(required=True,
-                                             description='The name of the recommendation'),
-        'number_of_likes': fields.Integer(required=True,
-                                          description='The type of the recommendation'),
+                                            description='The name of the recommendation'),
+        'number_of_likes': fields.Integer(required=False
+                                            ,description='The type of the recommendation'),
         'type': fields.String(enum=RecommendationType,
                               description='The type of the recommendation'),
     }
@@ -52,11 +52,11 @@ recommendation_model = api.inherit(
 # query string arguments
 recommendation_args = reqparse.RequestParser()
 recommendation_args.add_argument(
-    'id', type=int, required=False, help='List recommendations by id')
+    'id', type=int, location='args',required=False, help='List recommendations by id')
 recommendation_args.add_argument(
-    'name', type=str, required=False, help='List recommendations by name')
+    'name', type=str,location='args',required=False, help='List recommendations by name')
 recommendation_args.add_argument(
-    'type', type=str, required=False, help='List recommendations by type')
+    'type', type=int, location='args',required=False, help='List recommendations by type')
 recommendation_args.add_argument(
     'number_of_likes', type=int, required=False, help='List recommendations by number_of_likes')
 recommendation_args.add_argument(
@@ -106,7 +106,8 @@ class RecommendationResource(Resource):
                     f"recommendations with id '{recommendation_id}' was not found.")
         app.logger.info("Returning recommendation: %s", recommendation.recommendation_name)
         return jsonify(recommendation.serialize()), status.HTTP_200_OK
-    
+
+
     @api.doc('update_recommendations')
     @api.response(404, 'Recommendation not found')
     @api.response(400, 'The posted data was not valid')
@@ -119,16 +120,19 @@ class RecommendationResource(Resource):
         This endpoint will update a recommendation based the body that is posted
         """
         app.logger.info("Request to update recommendation with id: %s", recommendation_id)
-        check_content_type('application/json')
+        check_content_type("application/json")
         recommendation = Recommendation.find(recommendation_id)
-        if not recommendation:
-            abort(status.HTTP_404_NOT_FOUND, "Recommendation with id '{}' was not found.".format(recommendation_id))
-        data = request.get_json()
-        recommendation.deserialize(data)
-        recommendation.id = recommendation_id
-        recommendation.save()
-        return recommendation.serialize(), status.HTTP_200_OK
-    
+        if recommendation is None:
+            abort(status.HTTP_404_NOT_FOUND, f"Recommendation id {recommendation_id} does not exist")
+        recommendation.deserialize(request.get_json())
+        recommendation.update()
+        message = recommendation.serialize()
+        app.logger.info("Recommendation with ID [%s] updated.", recommendation_id)
+        location_url = api.url_for(
+                                "get_recommendations",
+                                recommendation_id=recommendation.id, _external=True)
+        return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
+
     @api.doc('delete_recommendations')
     @api.response(204, 'Recommendation deleted')
     def delete(self, recommendation_id):
@@ -174,14 +178,11 @@ class RecommendationCollection(Resource):
             recs = Recommendation.find_by_type(recommendation_type)
         else:
             recs = Recommendation.all()
-
         results = [rec.serialize() for rec in recs]
         app.logger.info("Returning %d recommendations", len(results))
         return jsonify(results), status.HTTP_200_OK
-    
+
     @api.doc('create_recommendations')
-    @api.expect(create_model)
-    @api.response(400, 'The posted data was not valid')
     @api.response(201, 'Recommendation created successfully')
     @api.marshal_with(recommendation_model, code=201)
     def post(self):
@@ -232,7 +233,7 @@ class RecommendationLikeResource(Resource):
         location_url = api.url_for(RecommendationResource,
                             recommendation_id=recommendation.id, _external=True)
         return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
-    
+
 @api.route('/recommendations/<int:recommendation_id>/dislike', strict_slashes=False)
 @api.param('recommendation_id',"The recommendation id")
 class RecommendationDislikeResource(Resource):
@@ -258,10 +259,8 @@ class RecommendationDislikeResource(Resource):
         message = recommendation.serialize()
         app.logger.info("Recommendation with ID [%s] disliked.", recommendation_id)
         location_url = api.url_for(RecommendationResource,
-                            recommendation_id=recommendation.id, _external=True)   
+                            recommendation_id=recommendation.id, _external=True)
         return jsonify(message), status.HTTP_200_OK, {"Location": location_url}
-    
-
 
 def check_content_type(content_type):
     """Checks that the media type is correct"""

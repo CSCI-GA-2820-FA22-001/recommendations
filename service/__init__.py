@@ -8,8 +8,8 @@ import os
 import sys
 import logging
 from flask import Flask
-from service import config
 from flask_restx import Api
+from service import config
 from .common import log_handlers
 
 
@@ -48,4 +48,3 @@ except Exception as error:  # pylint: disable=broad-except
     sys.exit(4)
 
 app.logger.info("Service initialized!")
-
