@@ -1,4 +1,4 @@
-nes (353 sloc)  15 KB
+'''nes (353 sloc)  15 KB
 
 ######################################################################
 # Copyright 2016, 2021 John J. Rofrano. All Rights Reserved.
@@ -284,4 +284,4 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(data["status"], 200)
-        self.assertEqual(data["message"], "Healthy")
+        self.assertEqual(data["message"], "Healthy")'''
