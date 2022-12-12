@@ -4,14 +4,28 @@ Package for the application models and service routes
 This module creates and configures the Flask app and sets up the logging
 and SQL database
 """
+import os
 import sys
+import logging
 from flask import Flask
+from flask_restx import Api
 from service import config
 from .common import log_handlers
+
 
 # Create Flask application
 app = Flask(__name__)
 app.config.from_object(config)
+
+api = Api(app,
+          version='1.0.0',
+          title='Recommendation REST API Service',
+          description='This is a Recommendation server.',
+          default='recommendations',
+          default_label='Recommendation operations',
+          doc='/apidocs',
+          prefix='/api'
+          )
 
 # Dependencies require we import the routes AFTER the Flask app is created
 # pylint: disable=wrong-import-position, wrong-import-order, cyclic-import
