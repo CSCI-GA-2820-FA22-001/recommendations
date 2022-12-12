@@ -19,13 +19,15 @@ Error handlers
 Handles all of the HTTP Error Codes returning JSON messages
 """
 
-from service import app,api
+from service import app, api
 from service.models import DataValidationError
 from . import status
 
 ######################################################################
 # Special Error Handlers
 ######################################################################
+
+
 @api.errorhandler(DataValidationError)
 def request_validation_error(error):
     """ Handles Value Errors from bad data """
