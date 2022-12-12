@@ -11,7 +11,7 @@ from .common import status  # HTTP Status Codes
 
 
 # Import Flask application
-from . import app
+from . import app, api
 
 
 ######################################################################
@@ -23,18 +23,7 @@ def index():
     app.logger.info("Request for Root URL")
     return app.send_static_file("index.html")
 
-# Define the model so that the docs reflect what can be sent
 
-
-api = Api(app,
-          version='1.0.0',
-          title='Recommendation REST API Service',
-          description='This is a Recommendation server.',
-          default='recommendations',
-          default_label='Recommendation operations',
-          doc='/apidocs',
-          prefix='/api'
-          )
 
 create_model = api.model(
     'Recommendation',

@@ -17,10 +17,10 @@ from tests.factories import RecommendationFactory
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
 )
-BASE_URL = "/recommendations"
+BASE_URL = "/api/recommendations"
 
 
-######################################################################
+###n###################################################################
 #  T E S T   C A S E S
 ######################################################################
 # pylint: disable=R0904

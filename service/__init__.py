@@ -4,10 +4,14 @@ Package for the application models and service routes
 This module creates and configures the Flask app and sets up the logging
 and SQL database
 """
+import os
 import sys
+import logging
 from flask import Flask
 from service import config
+from flask_restx import Api
 from .common import log_handlers
+
 
 # Create Flask application
 app = Flask(__name__)
@@ -34,3 +38,13 @@ except Exception as error:  # pylint: disable=broad-except
     sys.exit(4)
 
 app.logger.info("Service initialized!")
+
+api = Api(app,
+          version='1.0.0',
+          title='Recommendation REST API Service',
+          description='This is a Recommendation server.',
+          default='recommendations',
+          default_label='Recommendation operations',
+          doc='/apidocs',
+          prefix='/api'
+          )
