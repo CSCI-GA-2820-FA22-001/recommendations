@@ -99,7 +99,8 @@ class RecommendationResource(Resource):
 
         This endpoint will return a Recommendation based on it's id
         """
-        app.logger.info("Request for recommendation with id: %s", recommendation_id)
+        app.logger.info(
+            "Request for recommendation with id: %s", recommendation_id)
         recommendation = Recommendation.find(recommendation_id)
         if not recommendation:
             api.abort(status.HTTP_404_NOT_FOUND,
@@ -130,7 +131,8 @@ class RecommendationResource(Resource):
         recommendation.deserialize(request.get_json())
         recommendation.recommendation_id = recommendation_id
         recommendation.save()
-        app.logger.info("Recommendation with ID [%s] updated.", recommendation_id)
+        app.logger.info(
+            "Recommendation with ID [%s] updated.", recommendation_id)
         return recommendation.serialize(), status.HTTP_200_OK
 
     # ------------------------------------------------------------------
@@ -144,7 +146,8 @@ class RecommendationResource(Resource):
 
         This endpoint will delete a Recommendation based the id specified in the path
         """
-        app.logger.info("Request to delete recommendation with id: %s", recommendation_id)
+        app.logger.info(
+            "Request to delete recommendation with id: %s", recommendation_id)
         recommendation = Recommendation.find(recommendation_id)
         if recommendation:
             recommendation.delete()
