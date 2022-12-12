@@ -17,6 +17,16 @@ from .common import log_handlers
 app = Flask(__name__)
 app.config.from_object(config)
 
+api = Api(app,
+          version='1.0.0',
+          title='Recommendation REST API Service',
+          description='This is a Recommendation server.',
+          default='recommendations',
+          default_label='Recommendation operations',
+          doc='/apidocs',
+          prefix='/api'
+          )
+
 # Dependencies require we import the routes AFTER the Flask app is created
 # pylint: disable=wrong-import-position, wrong-import-order, cyclic-import
 from service import routes, models         # noqa: E402, E261
@@ -39,12 +49,3 @@ except Exception as error:  # pylint: disable=broad-except
 
 app.logger.info("Service initialized!")
 
-api = Api(app,
-          version='1.0.0',
-          title='Recommendation REST API Service',
-          description='This is a Recommendation server.',
-          default='recommendations',
-          default_label='Recommendation operations',
-          doc='/apidocs',
-          prefix='/api'
-          )

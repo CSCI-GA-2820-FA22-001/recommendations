@@ -14,7 +14,7 @@
 # limitations under the License.
 ######################################################################
 
-from service import app
+from service import app,api
 from service.models import DataValidationError
 from . import status
 
