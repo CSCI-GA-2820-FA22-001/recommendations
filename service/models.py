@@ -113,10 +113,13 @@ class Recommendation(db.Model):
         """
         try:
             self.name = data["name"]
-            self.number_of_likes = data["number_of_likes"] if "number_of_likes" in data else 0
             self.recommendation_id = data["recommendation_id"]
             self.recommendation_name = data["recommendation_name"]
             self.type = getattr(RecommendationType, data["type"])
+            if ("number_of_likes" not in data or data["number_of_likes"] == ''):
+                self.number_of_likes = 0
+            else:
+                self.number_of_likes = data["number_of_likes"]
         except AttributeError as error:
             raise DataValidationError(
                                         "Invalid attribute: "
