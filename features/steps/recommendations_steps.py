@@ -17,6 +17,7 @@ def step_impl(context):
     for row in context.table:
         payload = {
             "name": row['name'],
+            "product_id": row['product_id'],
             "recommendation_id": row['recommendation_id'],
             "recommendation_name": row['recommendation_name'],
             "type": row['type'],

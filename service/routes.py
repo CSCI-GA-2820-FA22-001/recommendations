@@ -30,6 +30,8 @@ create_model = api.model(
     {
         'name': fields.String(required=True,
                               description='The name of the recommendation'),
+        'product_id': fields.Integer(required=True,
+                                            description='The product id of the recommendation'),
         'recommendation_id': fields.Integer(required=True,
                                             description='The id of the recommended product'),
         'recommendation_name': fields.String(required=True,
@@ -54,6 +56,8 @@ recommendation_model = api.inherit(
 recommendation_args = reqparse.RequestParser()
 recommendation_args.add_argument(
     'id', type=int, location='args', required=False, help='List recommendations by id')
+recommendation_args.add_argument(
+    'product_id', type=int, required=False, help='List recommendations by product_id')
 recommendation_args.add_argument(
     'name', type=str, location='args', required=False, help='List recommendations by name')
 recommendation_args.add_argument(
