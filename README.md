@@ -7,6 +7,9 @@
 [![codecov](https://codecov.io/gh/CSCI-GA-2820-FA22-001/recommendations/branch/master/graph/badge.svg?token=VQ46QSC8R9)](https://codecov.io/gh/CSCI-GA-2820-FA22-001/recommendations)
 [![BDD Tests](https://github.com/CSCI-GA-2820-FA22-001/recommendations/actions/workflows/bdd.yml/badge.svg)](https://github.com/CSCI-GA-2820-FA22-001/recommendations/actions/workflows/bdd.yml)
 
+Development Site : http://169.51.203.42:31001
+Production Site : http://169.51.203.42:31002
+
 ## Prerequisite Software Installation
 
 This project uses Docker and Visual Studio Code with the Remote Containers extension to provide a consistent repeatable disposable development environment for all developers.
