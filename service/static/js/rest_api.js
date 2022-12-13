@@ -12,6 +12,7 @@ $(function () {
         $("#recommendation_recommendation_name").val(res.recommendation_name);
         $("#recommendation_type").val(res.type);
         $("#recommendation_number_of_likes").val(res.number_of_likes);
+        $("#recommendation_product_id").val(res.product_id);
     }
 
     /// Clears all form fields
@@ -41,13 +42,15 @@ $(function () {
         let rec_product_name = $("#recommendation_recommendation_name").val()
         let type = $("#recommendation_type").val();
         let number_of_likes = $("#recommendation_number_of_likes").val();
+        let product_id = $("#recommendation_product_id").val();
 
         let data = {
             "name": name,
+            "product_id": product_id,
             "recommendation_id": rec_product_id,
             "recommendation_name": rec_product_name,
             "type": type,
-            "number_of_likes": number_of_likes
+            "number_of_likes": number_of_likes,
         };
 
         $("#flash_message").empty();
@@ -82,9 +85,11 @@ $(function () {
         let rec_product_name = $("#recommendation_recommendation_name").val()
         let type = $("#recommendation_type").val();
         let number_of_likes = $("#recommendation_number_of_likes").val();
+        let product_id = $("#recommendation_product_id").val();
 
         let data = {
             "name": name,
+            "product_id": product_id,
             "recommendation_id": rec_product_id,
             "recommendation_name": rec_product_name,
             "type": type,
@@ -278,6 +283,7 @@ $(function () {
             let table = '<table class="table table-striped" cellpadding="10">'
             table += '<thead><tr>'
             table += '<th class="col-md-2">ID</th>'
+            table += '<th class="col-md-2">Product ID</th>'
             table += '<th class="col-md-2">Name</th>'
             table += '<th class="col-md-2">Recommended Product ID</th>'
             table += '<th class="col-md-2">Recommended Product</th>'
@@ -287,7 +293,7 @@ $(function () {
             let firstRec = "";
             for(let i = 0; i < res.length; i++) {
                 let recommendation = res[i];
-                table +=  `<tr id="row_${i}"><td>${recommendation.id}</td><td>${recommendation.name}</td><td>${recommendation.recommendation_id}</td><td>${recommendation.recommendation_name}</td><td>${recommendation.type}</td><td>${recommendation.number_of_likes}</td></tr>`;
+                table +=  `<tr id="row_${i}"><td>${recommendation.id}</td><td>${recommendation.product_id}</td><td>${recommendation.name}</td><td>${recommendation.recommendation_id}</td><td>${recommendation.recommendation_name}</td><td>${recommendation.type}</td><td>${recommendation.number_of_likes}</td></tr>`;
                 if (i == 0) {
                     firstRec = recommendation;
                 }

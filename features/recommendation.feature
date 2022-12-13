@@ -5,11 +5,11 @@ Feature: The recommendation service back-end
 
 Background:
     Given the following recommendations
-        | name       | recommendation_id | recommendation_name | type  | number_of_likes   |
-        | fido       | 1      | AA      | CROSSSELL    | 2 |
-        | kitty      | 2      | AB      | UPSELL  | 3 |
-        | leo        | 3     | AC     |  ACCESSORY    | 4 |
-        | sammy      | 2    | AA      | UPSELL | 5 |
+        | name       | product_id       | recommendation_id | recommendation_name | type  | number_of_likes   |
+        | fido       | 1       | 1      | AA      | CROSSSELL    | 2 |
+        | kitty      | 3       | 2      | AB      | UPSELL  | 3 |
+        | leo        | 2       | 3     | AC     |  ACCESSORY    | 4 |
+        | sammy      | 1       | 2    | AA      | UPSELL | 5 |
 
 Scenario: The server is running
     When I visit the "Home Page"
@@ -19,6 +19,7 @@ Scenario: The server is running
 Scenario: Create a Recommendation
     When I visit the "Home Page"
     And I set the "Name" to "Happy"
+    And I set the "Product Id" to "3"
     And I set the "Recommendation Id" to "2"
     And I set the "Recommendation Name" to "Happiness"
     And I select "Cross Sell" in the "Type" dropdown
@@ -34,6 +35,7 @@ Scenario: Create a Recommendation
     And I press the "Retrieve" button
     Then I should see the message "Success"
     And I should see "Happy" in the "Name" field
+    And I should see "3" in the "Product Id" field
     And I should see "Happiness" in the "Recommendation Name" field
     And I should see "Cross Sell" in the "Type" dropdown
     And I should see "4" in the "Number Of Likes" field
@@ -89,6 +91,7 @@ Scenario: Update a Recommendation
 Scenario: Like and Dislike a recommendation
     When I visit the "Home Page"
     And I set the "Name" to "Happy"
+    And I set the "Product Id" to "2"
     And I set the "Recommendation Id" to "2"
     And I set the "Recommendation Name" to "Happiness"
     And I select "Cross Sell" in the "Type" dropdown
@@ -103,6 +106,7 @@ Scenario: Like and Dislike a recommendation
 Scenario: Delete a Recommendation
     When I visit the "Home Page"
     And I set the "Name" to "Happy"
+    And I set the "Product Id" to "2"
     And I set the "Recommendation Id" to "2"
     And I set the "Recommendation Name" to "Happiness"
     And I select "Cross Sell" in the "Type" dropdown

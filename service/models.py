@@ -36,6 +36,7 @@ class Recommendation(db.Model):
     """
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer)
     name = db.Column(db.String(63))
     recommendation_id = db.Column(db.Integer)
     recommendation_name = db.Column(db.String(63))
@@ -98,6 +99,7 @@ class Recommendation(db.Model):
         return {
             "id": self.id,
             "name": self.name,
+            "product_id": self.product_id,
             "recommendation_id": self.recommendation_id,
             "recommendation_name": self.recommendation_name,
             "type": self.type.name,
@@ -116,6 +118,7 @@ class Recommendation(db.Model):
             self.recommendation_id = data["recommendation_id"]
             self.recommendation_name = data["recommendation_name"]
             self.type = getattr(RecommendationType, data["type"])
+            self.product_id = data["product_id"]
             if ("number_of_likes" not in data or data["number_of_likes"] == ''):
                 self.number_of_likes = 0
             else:

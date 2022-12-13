@@ -58,9 +58,10 @@ class TestRecommendationModel(unittest.TestCase):
                                         name="prodA", recommendation_id=2,
                                         recommendation_name="prodB",
                                         type=RecommendationType.CROSSSELL,
-                                        number_of_likes=2)
+                                        number_of_likes=2, product_id=3)
         self.assertTrue(recommendation is not None)
         self.assertEqual(recommendation.id, None)
+        self.assertEqual(recommendation.product_id, 3)
         self.assertEqual(recommendation.name, "prodA")
         self.assertEqual(recommendation.recommendation_id, 2)
         self.assertEqual(recommendation.recommendation_name, "prodB")
@@ -75,7 +76,7 @@ class TestRecommendationModel(unittest.TestCase):
                                         name="prodA", recommendation_id=2,
                                         recommendation_name="prodB",
                                         type=RecommendationType.CROSSSELL,
-                                        number_of_likes=2)
+                                        number_of_likes=2, product_id=3)
         self.assertTrue(recommendation is not None)
         self.assertEqual(recommendation.id, None)
         recommendation.create()
@@ -105,16 +106,19 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertIsNotNone(recommendation.id)
         # Change it an save it
         recommendation.number_of_likes = 10
+        recommendation.product_id = 4
         original_id = recommendation.id
         recommendation.update()
         self.assertEqual(recommendation.id, original_id)
         self.assertEqual(recommendation.number_of_likes, 10)
+        self.assertEqual(recommendation.product_id, 4)
         # Fetch it back and make sure the id hasn't changed
         # but the data did change
         recommendations = Recommendation.all()
         self.assertEqual(len(recommendations), 1)
         self.assertEqual(recommendations[0].id, original_id)
         self.assertEqual(recommendations[0].number_of_likes, 10)
+        self.assertEqual(recommendations[0].product_id, 4)
 
     def test_update_no_id(self):
         """It should not Update a recommendation with no id"""
@@ -187,6 +191,8 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(data["type"], recommendation.type.name)
         self.assertIn("number_of_likes", data)
         self.assertEqual(data["number_of_likes"], recommendation.number_of_likes)
+        self.assertIn("product_id", data)
+        self.assertEqual(data["product_id"], recommendation.product_id)
 
     def test_deserialize_a_recommendation(self):
         """It should de-serialize a recommendation"""
@@ -200,6 +206,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(recommendation.recommendation_name, data["recommendation_name"])
         self.assertEqual(recommendation.type.name, data["type"])
         self.assertEqual(recommendation.number_of_likes, data["number_of_likes"])
+        self.assertEqual(recommendation.product_id, data["product_id"])
 
     def test_deserialize_a_recommendation_without_likes(self):
         """It should de-serialize a recommendation"""
@@ -252,6 +259,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(recommendation.recommendation_name, recommendations[1].recommendation_name)
         self.assertEqual(recommendation.type, recommendations[1].type)
         self.assertEqual(recommendation.number_of_likes, recommendations[1].number_of_likes)
+        self.assertEqual(recommendation.product_id, recommendations[1].product_id)
 
     def test_find_by_type(self):
         """It should Find recommendations by type"""
@@ -279,6 +287,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(found[0].recommendation_name, recommendations[0].recommendation_name)
         self.assertEqual(found[0].type, recommendations[0].type)
         self.assertEqual(found[0].number_of_likes, recommendations[0].number_of_likes)
+        self.assertEqual(found[0].product_id, recommendations[0].product_id)
 
     def test_find_or_404_found(self):
         """It should Find or return 404 not found"""
@@ -294,6 +303,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(recommendation.recommendation_name, recommendations[1].recommendation_name)
         self.assertEqual(recommendation.type, recommendations[1].type)
         self.assertEqual(recommendation.number_of_likes, recommendations[1].number_of_likes)
+        self.assertEqual(recommendation.product_id, recommendations[1].product_id)
 
     def test_find_or_404_not_found(self):
         """It should return 404 not found"""
