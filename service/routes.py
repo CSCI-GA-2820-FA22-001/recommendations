@@ -213,7 +213,7 @@ class RecommendationCollection(Resource):
         return message, status.HTTP_201_CREATED, {"Location": location_url}
 
 
-@api.route('/recommendations/<int:recommendation_id>/like', strict_slashes=False)
+@api.route('/recommendations/<int:recommendation_id>/like', strict_slashes=True)
 @api.param('recommendation_id', "The recommendation id")
 class RecommendationLikeResource(Resource):
     """
@@ -227,9 +227,9 @@ class RecommendationLikeResource(Resource):
     @api.marshal_with(recommendation_model)
     def put(self, recommendation_id):
         """
-        Update a recommendation
+        Like a recommendation
 
-        This endpoint will update a recommendation based the body that is posted
+        This endpoint will Like a recommendation based the body that is posted
         """
         app.logger.info(
             "Request to like recommendation with id: %s", recommendation_id)
@@ -246,7 +246,7 @@ class RecommendationLikeResource(Resource):
         return message, status.HTTP_200_OK, {"Location": location_url}
 
 
-@api.route('/recommendations/<int:recommendation_id>/dislike', strict_slashes=False)
+@api.route('/recommendations/<int:recommendation_id>/dislike', strict_slashes=True)
 @api.param('recommendation_id', "The recommendation id")
 class RecommendationDislikeResource(Resource):
     """
@@ -257,9 +257,9 @@ class RecommendationDislikeResource(Resource):
     @api.marshal_with(recommendation_model)
     def put(self, recommendation_id):
         """
-        Update a recommendation
+        Dislike a recommendation
 
-        This endpoint will update a recommendation based the body that is posted
+        This endpoint will dislike a recommendation based the body that is posted
         """
         app.logger.info(
             "Request to dislike recommendation with id: %s", recommendation_id)

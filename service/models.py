@@ -119,7 +119,7 @@ class Recommendation(db.Model):
             self.type = getattr(RecommendationType, data["type"])
         except AttributeError as error:
             raise DataValidationError(
-                                        "Invalid attribute: "
+                                        "Invalid attribute "
                                         + error.args[0]) from error
         except KeyError as error:
             raise DataValidationError(
