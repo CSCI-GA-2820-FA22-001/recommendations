@@ -169,7 +169,8 @@ $(function () {
         });
 
         ajax.fail(function(res){
-            flash_message("Server error!")
+            console.log(res)
+            flash_message(res.responseJSON.message)
         });
     });
 
@@ -178,9 +179,12 @@ $(function () {
     // ****************************************
 
     $("#like-btn").click(function () {
-
+        if(!$("#recommendation_id").val()){
+            $("#flash_message").empty();
+            flash_message("Enter a Recommendation ID");
+            return;
+        }
         let recommendation_id = $("#recommendation_id").val();
-
         $("#flash_message").empty();
 
         let ajax = $.ajax({
@@ -197,7 +201,7 @@ $(function () {
         });
 
         ajax.fail(function(res){
-            flash_message("Server error!")
+            flash_message(res.responseJSON.message)
         });
     });
 
@@ -206,9 +210,13 @@ $(function () {
     // ****************************************
 
     $("#dislike-btn").click(function () {
-
+        if(!$("#recommendation_id").val()){
+            $("#flash_message").empty();
+            flash_message("Enter a Recommendation ID");
+            return;
+        }
         let recommendation_id = $("#recommendation_id").val();
-
+        
         $("#flash_message").empty();
 
         let ajax = $.ajax({
@@ -224,7 +232,7 @@ $(function () {
         });
 
         ajax.fail(function(res){
-            flash_message("Server error!")
+            flash_message(res.responseJSON.message)
         });
     });
 
