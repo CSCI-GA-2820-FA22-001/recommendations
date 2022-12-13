@@ -201,6 +201,20 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(recommendation.type.name, data["type"])
         self.assertEqual(recommendation.number_of_likes, data["number_of_likes"])
 
+    def test_deserialize_a_recommendation_without_likes(self):
+        """It should de-serialize a recommendation"""
+        data = RecommendationFactory().serialize()
+        data['number_of_likes'] = ''
+        recommendation = Recommendation()
+        recommendation.deserialize(data)
+        self.assertNotEqual(recommendation, None)
+        self.assertEqual(recommendation.id, None)
+        self.assertEqual(recommendation.name, data["name"])
+        self.assertEqual(recommendation.recommendation_id, data["recommendation_id"])
+        self.assertEqual(recommendation.recommendation_name, data["recommendation_name"])
+        self.assertEqual(recommendation.type.name, data["type"])
+        self.assertEqual(recommendation.number_of_likes, 0)
+
     def test_deserialize_missing_data(self):
         """It should not deserialize a recommendation with missing data"""
         data = {"id": 1, "name": "prodA", "number_of_likes": 3}
